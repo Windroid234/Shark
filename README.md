@@ -13,11 +13,14 @@
 </p>
 
 > **Unofficial English fork of [Yunnijian/Shark](https://github.com/Yunnijian/Shark).**
-> This repository is not affiliated with, endorsed by, or maintained by the
-> upstream author. Upstream is the source of truth; this fork adds English
-> documentation and UI strings on top of it, and
-> `.github/workflows/upstream-sync.yml` follows upstream automatically
-> (build-gated, conflicts reported as issues).
+> Upstream removed its source repository in November 2026 and now publishes
+> binaries and update notes in
+> [Yunnijian/Shark-Releases](https://github.com/Yunnijian/Shark-Releases)
+> (releases only, no source). This fork continues from the last synced source
+> (v2.3.2) and follows that releases page: app features and new kernel profiles
+> are ported from the published APKs, and each fork release states which
+> upstream version it tracks. Source-level sync with upstream is no longer
+> possible.
 >
 > No warranty. Only use it on devices you own, and read
 > [Switching between the upstream and this fork](#switching-between-the-upstream-and-this-fork)
@@ -264,7 +267,7 @@ To switch in either direction:
 2. Uninstall the current build.
 3. Install the build you want from the matching releases page
    ([this fork](https://github.com/kpgc10kai/Shark/releases) or
-   [upstream](https://github.com/Yunnijian/Shark/releases)).
+   [upstream releases](https://github.com/Yunnijian/Shark-Releases)).
 
 Uninstalling clears the app's settings, the selected manager and extras, and the
 run history. Root is temporary anyway and disappears on reboot.
@@ -293,11 +296,17 @@ installed alongside this one, but settings and history are not migrated.
 ## Release
 
 - This fork: https://github.com/kpgc10kai/Shark/releases
-- Upstream: https://github.com/Yunnijian/Shark/releases/tag/v2.3.2
-  (the upstream repository was removed in November 2026; this fork continues
-  from the last synced commit, v2.3.2)
-- Based on upstream v2.3.2 (upstream versionCode 98); each fork release stamps its
-  own `2.3.2-en.N` version and is signed with the fork's release key
+- Upstream releases (binaries only, no source):
+  https://github.com/Yunnijian/Shark-Releases
+- Upstream source repository was removed in November 2026. This fork continues
+  from the last synced source (v2.3.2, upstream versionCode 98) and tracks the
+  upstream releases page:
+  - `2.4.1-en.1`: auto root on boot, ported from upstream 2.4
+  - `2.4.1-en.2`: device table entry for Xiaomi 18 Pro (no native code yet)
+  - `2.4.1-en.3`: `libk61821.so` rebuilt with the Xiaomi 18 Pro
+    `6.18.21-g1d099` profile (offsets verified offline against the firmware)
+- Each fork release stamps its own `2.4.1-en.N` version and is signed with the
+  fork's release key
 - Every fork release ships the signed APK together with its SHA-256 file
 
 Universal kernel release:
