@@ -96,16 +96,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          cat > notes.md <<'EOF'
-          English fork of [Yunnijian/Shark](https://github.com/Yunnijian/Shark).
-
-          - English documentation and English UI strings (Chinese kept in `values-zh`)
-          - Signed with the fork's own release key, so future releases update in place
-          - Package `com.shark.kty` (installs alongside the old `com.pyb110.onekey` build)
-
-          Root is temporary and disappears after a reboot. Only the kernel builds
-          listed in the README are accepted. Upstream remains the source of truth.
-          EOF
+          cp docs/release-notes.md notes.md
           gh release create "$GITHUB_REF_NAME" \
             --title "Shark $GITHUB_REF_NAME" \
             --notes-file notes.md \
