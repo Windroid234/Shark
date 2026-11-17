@@ -1,5 +1,6 @@
 package com.shark.kty
 
+import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
@@ -79,6 +80,7 @@ import androidx.compose.material.icons.filled.NotificationsOff
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.RemoveModerator
 import androidx.compose.material.icons.filled.RestartAlt
+import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material.icons.filled.PowerSettingsNew
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Security
@@ -136,6 +138,8 @@ import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.entity.Library
 import rikka.shizuku.Shizuku
 import roro.stellar.Stellar
+import roro.stellar.manager.StellarSettings
+import roro.stellar.manager.adb.AdbPairingService
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.selection.selectable
@@ -455,6 +459,7 @@ class MainActivity : ComponentActivity() {
         if (autoRootRequested) {
             addLog("Auto root on boot: starting")
         }
+        StellarSettings.init(this)
         unloadGuard = getSharedPreferences("pyb110", MODE_PRIVATE).getBoolean("unload_guard", true)
         susfsSupport = getSharedPreferences("pyb110", MODE_PRIVATE).getBoolean("susfs_support", false)
         vfsSupport = getSharedPreferences("pyb110", MODE_PRIVATE).getBoolean("vfs_support", false)
@@ -1533,6 +1538,13 @@ class MainActivity : ComponentActivity() {
                             onCheckedChange = { updateAutoRootOnBoot(it) }
                         )
                         Divider(startIndent = itemDividerIndent(), color = colors.divider)
+                        SettingItem(
+                            icon = Icons.Filled.Wifi,
+                            title = stringResource(R.string.wireless_adb_pairing),
+                            summary = stringResource(R.string.wireless_adb_pairing_summary),
+                            onClick = { startWirelessAdbPairing() }
+                        )
+                        Divider(startIndent = itemDividerIndent(), color = colors.divider)
                         if (!hidesOplusOnlyOptions()) {
                             Divider(startIndent = itemDividerIndent(), color = colors.divider)
                             SettingSwitchItem(
@@ -2326,6 +2338,17 @@ class MainActivity : ComponentActivity() {
         antiRootGuard = value
         getSharedPreferences("pyb110", MODE_PRIVATE).edit().putBoolean("antiroot_guard", value).apply()
         addLog("Anti-root guard: ${if (value) "on (stop riskdetect HAL; restored on reboot)" else "off"}")
+    }
+
+    private fun startWirelessAdbPairing() {
+        StellarSettings.init(this)
+        if (Build.VERSION.SDK_INT >= 33 &&
+            checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1001)
+        }
+        addLog("Wireless ADB pairing: searching for the pairing service…")
+        startForegroundService(AdbPairingService.startIntent(this))
     }
 
     private fun updateAutoRootOnBoot(value: Boolean) {

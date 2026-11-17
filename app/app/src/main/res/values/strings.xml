@@ -126,4 +126,27 @@
     <string name="soft_reboot_now">Immediately</string>
     <string name="soft_reboot_in_min">In %1$d min</string>
     <string name="auto_root_on_boot">Auto root on boot</string>
+    <string name="wireless_adb_pairing">Wireless ADB pairing</string>
+    <string name="wireless_adb_pairing_summary">Pair over Wireless debugging to activate the shell service (experimental)</string>
+    <string name="wireless_debugging_pairing_channel">Wireless debugging pairing</string>
+    <string name="pairing_alert_channel">Pairing code</string>
+    <string name="pairing_service_found">Pairing service found</string>
+    <string name="enter_pairing_code">Enter the pairing code shown by Android</string>
+    <string name="pairing_success">Pairing succeeded</string>
+    <string name="searching_connect_service">Searching for the ADB connect service…</string>
+    <string name="pairing_failed_retrying">Pairing failed, retrying</string>
+    <string name="please_wait_auto_return">Please wait, returning automatically…</string>
+    <string name="connect_service_not_found">ADB connect service not found</string>
+    <string name="please_open_app_manually">Open Shark and try again</string>
+    <string name="stop_search">Stop</string>
+    <string name="retry">Retry</string>
+    <string name="cannot_find_pairing">Cannot find the pairing service</string>
+    <string name="pairing_code">Pairing code</string>
+    <string name="enter_pairing_code_action">Enter code</string>
+    <string name="searching_pairing_service">Searching for the pairing service…</string>
+    <string name="pairing_service_not_found">Pairing service not found</string>
+    <string name="ensure_wireless_debugging_open">Turn on Wireless debugging in Developer options first</string>
+    <string name="pairing_in_progress">Pairing…</string>
+    <string name="search_stopped">Search stopped</string>
+    <string name="pairing_service_not_found_retry">Pairing service not found. Retry?</string>
 </resources>
