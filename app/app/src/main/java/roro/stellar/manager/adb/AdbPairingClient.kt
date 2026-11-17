@@ -224,7 +224,12 @@ class AdbPairingClient(private val host: String, private val port: Int, private 
         outputStream = DataOutputStream(sslSocket.outputStream)
 
         val pairCodeBytes = pairCode.toByteArray()
-        val keyMaterial = exportKeyingMaterial(sslSocket, kExportedKeyLabel, kExportedKeySize)
+        val keyMaterial = try {
+            exportKeyingMaterial(sslSocket, kExportedKeyLabel, kExportedKeySize)
+        } catch (t: Throwable) {
+            Log.e(TAG, "exportKeyingMaterial failed", t)
+            throw t
+        }
         val passwordBytes = ByteArray(pairCode.length + keyMaterial.size)
         pairCodeBytes.copyInto(passwordBytes)
         keyMaterial.copyInto(passwordBytes, pairCodeBytes.size)

@@ -264,6 +264,7 @@ class AdbPairingService : Service() {
             AdbPairingClient(host, port, code, key).runCatching {
                 start()
             }.onFailure {
+                Log.e(tag, "pairing failed", it)
                 handleResult(false)
             }.onSuccess {
                 handleResult(it)
