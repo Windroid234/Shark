@@ -311,24 +311,20 @@ installed alongside this one, but settings and history are not migrated.
 | `2.4.1-en.2` | 2.4.1 | Device table entry for Xiaomi 18 Pro |
 | `2.4.1-en.3` | 2.4.1 | `libk61821.so` rebuilt with the Xiaomi 18 Pro `6.18.21-g1d099` profile (offsets verified offline against the firmware) |
 | `2.5-en.1` | 2.5 | Xiaomi 18 Fold / Pad 9 Pro Max `6.18.21-g805aa6adea19` profile added (**experimental**; values copied from upstream, not yet verified against the matching firmware) |
+| `2.6-en.1` | 2.5 | **Wireless ADB pairing** (experimental): pair from Settings, auto-grant `WRITE_SECURE_SETTINGS`, then run the root flow over the paired loopback ADB connection — no PC or separate Stellar/Shizuku app |
 
-Each release stamps its own `2.5-en.N` version and is signed with the fork's
+Each release stamps its own `2.6-en.N` version and is signed with the fork's
 release key. Every release ships the signed APK together with its SHA-256 file.
 
 ### Planned / not yet ported
 
-The following upstream 2.5 features are not implemented in this fork yet:
-
-- **Wireless ADB activation (Shark Shell)** — pair with Android's wireless
-  debugging, start a privileged shell service, and run the root flow without a
-  PC or a separate Stellar/Shizuku app.
-  - Upstream 2.5 ports this from [Stellar](https://github.com/roro2239/Stellar)
-    (MPL-2.0); the same source can be used here.
-  - Work items: ADB protocol/pairing (`roro.stellar.manager.adb`), native
-    `adb_pairing`/`starter` JNI, foreground service, notification pairing code,
-    accessibility helper, English UI.
-- **Wired ADB activation** — start the privileged service over USB ADB.
-- English localization for the pairing/activation screens.
+- **Wired ADB activation** — start the privileged backend over USB ADB.
+- **Pairing UI polish / English strings** — the current pairing flow uses the
+  notification-based code entry inherited from Stellar; dedicated in-app screens
+  and translations are still pending.
+- **Device testing** — wireless ADB activation is experimental; verify on the
+  target OnePlus devices before relying on it.
+- Upstream Xiaomi 18 Fold profile remains experimental (see `2.5-en.1`).
 
 Universal kernel release:
 
