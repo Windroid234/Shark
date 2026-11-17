@@ -1378,7 +1378,7 @@ class MainActivity : ComponentActivity() {
         ) {
             Box(
                 modifier = Modifier
-                    .weight(0.42f)
+                    .weight(0.5f)
                     .clip(CouiShape(28.dp, 2f))
                     .background(if (busy) colors.disabled else scheme.accent)
                     .clickable(enabled = !busy, role = Role.Button) {
@@ -1398,7 +1398,7 @@ class MainActivity : ComponentActivity() {
             }
             Box(
                 modifier = Modifier
-                    .weight(0.58f)
+                    .weight(0.5f)
                     .clip(CouiShape(28.dp, 2f))
                     .background(if (busy) colors.disabled else scheme.accent)
                     .clickable(enabled = !busy, role = Role.Button) {
