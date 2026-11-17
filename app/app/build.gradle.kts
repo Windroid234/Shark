@@ -106,4 +106,6 @@ dependencies {
     implementation("dev.rikka.shizuku:aidl:13.1.5")
     implementation("dev.rikka.shizuku:provider:13.1.5")
     implementation("com.github.roro2239:Stellar-API:1.0.3")
+    implementation("org.bouncycastle:bcprov-jdk18on:1.80")
+    implementation("org.bouncycastle:bcpkix-jdk18on:1.80")
 }
