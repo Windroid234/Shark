@@ -127,6 +127,8 @@
     <string name="soft_reboot_in_min">In %1$d min</string>
     <string name="auto_root_on_boot">Auto root on boot</string>
     <string name="wireless_adb_pairing">Wireless ADB pairing</string>
+    <string name="wireless_adb_button">Wireless ADB</string>
+    <string name="wireless_adb_connected_button">Wireless ADB\nconnected</string>
     <string name="wireless_adb_pairing_summary">Pair over Wireless debugging to activate the shell service (experimental)</string>
     <string name="wireless_debugging_pairing_channel">Wireless debugging pairing</string>
     <string name="pairing_alert_channel">Pairing code</string>

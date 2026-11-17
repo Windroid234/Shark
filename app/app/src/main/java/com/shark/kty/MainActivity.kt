@@ -1362,38 +1362,61 @@ class MainActivity : ComponentActivity() {
     private fun PrimaryActionCard() {
         val colors = CouiPageDefaults.themeColors()
         val scheme = CouiTheme.colorScheme
+        val wirelessReady = WirelessAdb.connected
         val label = when {
             busy -> stringResource(R.string.running)
-            !binderReady -> stringResource(R.string.stellar_not_running)
+            !binderReady -> stringResource(R.string.one_click_root)
             !authorized -> stringResource(R.string.grant_shizuku)
             ksuActive -> stringResource(R.string.verify_or_reroot)
             else -> stringResource(R.string.one_click_root)
         }
-        Box(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 0.dp)
-                .clip(CouiShape(28.dp, 2f))
-                .background(if (busy) colors.disabled else scheme.accent)
-                .clickable(enabled = !busy, role = Role.Button) {
-                    when {
-                        !binderReady -> {
-                            addLog("Start Stellar or Shizuku first")
-                            PrivService.openManager(applicationContext)
-                        }
-                        !authorized -> PrivService.request(REQ_SHIZUKU)
-                        else -> runFlow()
-                    }
-                }
-                .padding(vertical = 12.dp),
-            contentAlignment = Alignment.Center
+                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 0.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Text(
-                text = label,
-                kind = CouiTextKind.SectionTitle,
-                color = Color.White,
-                textAlign = TextAlign.Center
-            )
+            Box(
+                modifier = Modifier
+                    .weight(0.42f)
+                    .clip(CouiShape(28.dp, 2f))
+                    .background(if (busy) colors.disabled else colors.card)
+                    .clickable(enabled = !busy, role = Role.Button) {
+                        startWirelessAdbPairing()
+                    }
+                    .padding(vertical = 12.dp, horizontal = 8.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = if (wirelessReady) stringResource(R.string.wireless_adb_connected_button)
+                    else stringResource(R.string.wireless_adb_button),
+                    kind = CouiTextKind.SectionTitle,
+                    color = if (wirelessReady) scheme.accent else colors.title,
+                    textAlign = TextAlign.Center
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .weight(0.58f)
+                    .clip(CouiShape(28.dp, 2f))
+                    .background(if (busy) colors.disabled else scheme.accent)
+                    .clickable(enabled = !busy, role = Role.Button) {
+                        when {
+                            !binderReady -> startWirelessAdbPairing()
+                            !authorized -> PrivService.request(REQ_SHIZUKU)
+                            else -> runFlow()
+                        }
+                    }
+                    .padding(vertical = 12.dp, horizontal = 8.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = label,
+                    kind = CouiTextKind.SectionTitle,
+                    color = Color.White,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
     }
 
