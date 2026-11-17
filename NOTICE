@@ -92,4 +92,14 @@ profile-switch module described in entry 9.
           KSU-Universal project README. The manager APKs' own ksud binaries
           remain external (see "Supported managers" above).
 
+10. Wireless ADB activation (ported from Stellar)
+    Source: https://github.com/roro2239/Stellar
+            (manager/src/main/kotlin/roro/stellar/manager/adb,
+             manager/src/main/jni/adb_pairing.cpp, manager/src/main/jni/starter.cpp)
+    License: MPL-2.0 (full text: app/src/main/assets/licenses/MPL-2.0.txt)
+    Used: ADB protocol/pairing core under app/src/main/java/com/shark/kty/adb,
+          with local modifications (package rename, Conscrypt reflection,
+          English integration). The modified source stays in this repository;
+          the original is available at the link above.
+
 The application icon is drawn by this project.
