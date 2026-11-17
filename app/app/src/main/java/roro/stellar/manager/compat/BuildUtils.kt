@@ -1,4 +1,4 @@
-package com.shark.kty.compat
+package roro.stellar.manager.compat
 
 import android.os.Build
 

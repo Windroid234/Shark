@@ -1,4 +1,4 @@
-package com.shark.kty.adb
+package roro.stellar.manager.adb
 
 object AdbProtocol {
 

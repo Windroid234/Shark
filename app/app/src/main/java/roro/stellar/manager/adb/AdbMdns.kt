@@ -1,4 +1,4 @@
-package com.shark.kty.adb
+package roro.stellar.manager.adb
 
 import android.content.Context
 import android.net.nsd.NsdManager
@@ -9,7 +9,7 @@ import android.os.Looper
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Observer
-import com.shark.kty.compat.LocalNetwork
+import roro.stellar.manager.compat.LocalNetwork
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.NetworkInterface

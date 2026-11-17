@@ -1,4 +1,4 @@
-package com.shark.kty.adb
+package roro.stellar.manager.adb
 
 import android.annotation.SuppressLint
 import android.content.SharedPreferences

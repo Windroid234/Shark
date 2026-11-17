@@ -1,13 +1,13 @@
-package com.shark.kty.adb
+package roro.stellar.manager.adb
 
-import com.shark.kty.adb.AdbProtocol.A_AUTH
-import com.shark.kty.adb.AdbProtocol.A_CLSE
-import com.shark.kty.adb.AdbProtocol.A_CNXN
-import com.shark.kty.adb.AdbProtocol.A_OKAY
-import com.shark.kty.adb.AdbProtocol.A_OPEN
-import com.shark.kty.adb.AdbProtocol.A_STLS
-import com.shark.kty.adb.AdbProtocol.A_SYNC
-import com.shark.kty.adb.AdbProtocol.A_WRTE
+import roro.stellar.manager.adb.AdbProtocol.A_AUTH
+import roro.stellar.manager.adb.AdbProtocol.A_CLSE
+import roro.stellar.manager.adb.AdbProtocol.A_CNXN
+import roro.stellar.manager.adb.AdbProtocol.A_OKAY
+import roro.stellar.manager.adb.AdbProtocol.A_OPEN
+import roro.stellar.manager.adb.AdbProtocol.A_STLS
+import roro.stellar.manager.adb.AdbProtocol.A_SYNC
+import roro.stellar.manager.adb.AdbProtocol.A_WRTE
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
