@@ -1,9 +1,9 @@
 package roro.stellar.manager.adb
 
+import android.net.ssl.SSLSockets
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import com.android.org.conscrypt.Conscrypt
 import java.io.Closeable
 import java.io.DataInputStream
 import java.io.DataOutputStream
@@ -210,7 +210,7 @@ class AdbPairingClient(private val host: String, private val port: Int, private 
 
         val pairCodeBytes = pairCode.toByteArray()
         val keyMaterial = try {
-            Conscrypt.exportKeyingMaterial(sslSocket, kExportedKeyLabel, null, kExportedKeySize)
+            SSLSockets.exportKeyingMaterial(sslSocket, kExportedKeyLabel, null, kExportedKeySize)
         } catch (t: Throwable) {
             Log.e(TAG, "exportKeyingMaterial failed", t)
             throw t
