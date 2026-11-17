@@ -460,6 +460,21 @@ class MainActivity : ComponentActivity() {
             addLog("Auto root on boot: starting")
         }
         StellarSettings.init(this)
+        val adbPairingPort = intent?.getIntExtra("adb_pairing_port", -1) ?: -1
+        if (adbPairingPort > 0) {
+            lifecycleScope.launch(Dispatchers.IO) {
+                val ok = WirelessAdb.connect(applicationContext, "127.0.0.1", adbPairingPort)
+                withContext(Dispatchers.Main) {
+                    if (ok) {
+                        addLog("Wireless ADB connected (port $adbPairingPort)")
+                        binderReady = true
+                        authorized = true
+                    } else {
+                        addLog("Wireless ADB connection failed (port $adbPairingPort)")
+                    }
+                }
+            }
+        }
         unloadGuard = getSharedPreferences("pyb110", MODE_PRIVATE).getBoolean("unload_guard", true)
         susfsSupport = getSharedPreferences("pyb110", MODE_PRIVATE).getBoolean("susfs_support", false)
         vfsSupport = getSharedPreferences("pyb110", MODE_PRIVATE).getBoolean("vfs_support", false)

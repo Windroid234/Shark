@@ -12,7 +12,8 @@ import java.io.OutputStream
 
 enum class PrivBackend(val label: String) {
     STELLAR("Stellar"),
-    SHIZUKU("Shizuku")
+    SHIZUKU("Shizuku"),
+    WIRELESS_ADB("Wireless ADB")
 }
 
 class PrivProcess(
@@ -31,6 +32,7 @@ object PrivService {
     fun pick(): PrivBackend? = when {
         runCatching { Stellar.pingBinder() }.getOrDefault(false) -> PrivBackend.STELLAR
         runCatching { Shizuku.pingBinder() }.getOrDefault(false) -> PrivBackend.SHIZUKU
+        WirelessAdb.connected -> PrivBackend.WIRELESS_ADB
         else -> null
     }
 
@@ -39,6 +41,7 @@ object PrivService {
         PrivBackend.SHIZUKU -> runCatching {
             Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED
         }.getOrDefault(false)
+        PrivBackend.WIRELESS_ADB -> true
         null -> false
     }
 
@@ -46,6 +49,7 @@ object PrivService {
         when (pick()) {
             PrivBackend.STELLAR -> Stellar.requestPermission("stellar", code)
             PrivBackend.SHIZUKU -> Shizuku.requestPermission(code)
+            PrivBackend.WIRELESS_ADB -> Unit
             null -> Unit
         }
     }
@@ -67,7 +71,8 @@ object PrivService {
                     ParcelFileDescriptor.AutoCloseInputStream(p.getErrorStream())
                 ) { p.waitFor() }
             }
-            null -> error("no privileged backend (Stellar/Shizuku)")
+            PrivBackend.WIRELESS_ADB -> WirelessAdb.newProcess(cmd)
+            null -> error("no privileged backend (Stellar/Shizuku/Wireless ADB)")
         }
 
     fun openManager(context: Context) {
