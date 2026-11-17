@@ -1380,7 +1380,7 @@ class MainActivity : ComponentActivity() {
                 modifier = Modifier
                     .weight(0.42f)
                     .clip(CouiShape(28.dp, 2f))
-                    .background(if (busy) colors.disabled else colors.card)
+                    .background(if (busy) colors.disabled else scheme.accent)
                     .clickable(enabled = !busy, role = Role.Button) {
                         startWirelessAdbPairing()
                     }
@@ -1391,8 +1391,9 @@ class MainActivity : ComponentActivity() {
                     text = if (wirelessReady) stringResource(R.string.wireless_adb_connected_button)
                     else stringResource(R.string.wireless_adb_button),
                     kind = CouiTextKind.SectionTitle,
-                    color = if (wirelessReady) scheme.accent else colors.title,
-                    textAlign = TextAlign.Center
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1
                 )
             }
             Box(
