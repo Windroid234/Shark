@@ -1415,7 +1415,8 @@ class MainActivity : ComponentActivity() {
                     text = label,
                     kind = CouiTextKind.SectionTitle,
                     color = Color.White,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    maxLines = 1
                 )
             }
         }
