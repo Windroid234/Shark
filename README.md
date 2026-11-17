@@ -78,6 +78,7 @@ SukiSU Ultra, or FinaSU root environment.
 | Realme Neo8 (RMX8899) | ColorOS 16/17 | `6.12.38-android16-5-g844001fb8721-ab14552068-4k`<br>`6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
 | vivo / iQOO devices | OriginOS 6/7 | `6.12.58-android16-6-g690108013dcc-abogki576129896-4k`<br>`6.12.58-android16-6-g0a092cc0037a-abogki521987229-4k`<br>`6.12.58-android16-6-gdd6fd5c98918-abogki543627742-4k`<br>`6.12.23-android16-5-g41f4cb1fa7c7-abogki465038634-4k`<br>`6.6.127-android15-8-gd489d4ad2a70-abogki567717946-4k` |
 | Xiaomi 18 Pro (M610BB) | HyperOS 4 / Android 17 | `6.18.21-android17-5-g1d099fcb35e0-abogki540753930-4k` |
+| Xiaomi 18 Fold (lhasa) | HyperOS 4 / Android 17 | `6.18.21-android17-5-g805aa6adea19-abogki576585092-4k` |
 
 ## Supported managers
 
@@ -300,14 +301,34 @@ installed alongside this one, but settings and history are not migrated.
   https://github.com/Yunnijian/Shark-Releases
 - Upstream source repository was removed in November 2026. This fork continues
   from the last synced source (v2.3.2, upstream versionCode 98) and tracks the
-  upstream releases page:
-  - `2.4.1-en.1`: auto root on boot, ported from upstream 2.4
-  - `2.4.1-en.2`: device table entry for Xiaomi 18 Pro (no native code yet)
-  - `2.4.1-en.3`: `libk61821.so` rebuilt with the Xiaomi 18 Pro
-    `6.18.21-g1d099` profile (offsets verified offline against the firmware)
-- Each fork release stamps its own `2.4.1-en.N` version and is signed with the
-  fork's release key
-- Every fork release ships the signed APK together with its SHA-256 file
+  upstream releases page.
+
+### Update history
+
+| Fork release | Upstream | Changes |
+|---|---|---|
+| `2.4.1-en.1` | 2.4 | Auto root on boot (English UI) |
+| `2.4.1-en.2` | 2.4.1 | Device table entry for Xiaomi 18 Pro |
+| `2.4.1-en.3` | 2.4.1 | `libk61821.so` rebuilt with the Xiaomi 18 Pro `6.18.21-g1d099` profile (offsets verified offline against the firmware) |
+| `2.5-en.1` | 2.5 | Xiaomi 18 Fold / Pad 9 Pro Max `6.18.21-g805aa6adea19` profile added (offsets verified offline against the firmware) |
+
+Each release stamps its own `2.5-en.N` version and is signed with the fork's
+release key. Every release ships the signed APK together with its SHA-256 file.
+
+### Planned / not yet ported
+
+The following upstream 2.5 features are not implemented in this fork yet:
+
+- **Wireless ADB activation (Shark Shell)** — pair with Android's wireless
+  debugging, start a privileged shell service, and run the root flow without a
+  PC or a separate Stellar/Shizuku app.
+  - Upstream 2.5 ports this from [Stellar](https://github.com/roro2239/Stellar)
+    (MPL-2.0); the same source can be used here.
+  - Work items: ADB protocol/pairing (`roro.stellar.manager.adb`), native
+    `adb_pairing`/`starter` JNI, foreground service, notification pairing code,
+    accessibility helper, English UI.
+- **Wired ADB activation** — start the privileged service over USB ADB.
+- English localization for the pairing/activation screens.
 
 Universal kernel release:
 
