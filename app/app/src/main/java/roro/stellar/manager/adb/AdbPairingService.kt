@@ -408,6 +408,16 @@ class AdbPairingService : Service() {
                     client.shellCommand(command) { output ->
                         Log.d(tag, "授权命令输出: ${String(output)}")
                     }
+                    // Bring the app back to the foreground through the shell user;
+                    // a background service cannot start activities on Android 17.
+                    val openApp = "am start -n $packageName/.MainActivity --ei adb_pairing_port $port"
+                    runCatching {
+                        client.shellCommand(openApp) { output ->
+                            Log.d(tag, "open app output: ${String(output)}")
+                        }
+                    }.onFailure {
+                        Log.w(tag, "am start failed", it)
+                    }
                 }
                 Log.i(tag, "WRITE_SECURE_SETTINGS 权限授权成功")
             } catch (e: Exception) {
