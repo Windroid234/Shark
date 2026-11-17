@@ -2357,10 +2357,18 @@ class MainActivity : ComponentActivity() {
 
     private fun startWirelessAdbPairing() {
         StellarSettings.init(this)
-        if (Build.VERSION.SDK_INT >= 33 &&
-            checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1001)
+        val wanted = mutableListOf<String>()
+        if (Build.VERSION.SDK_INT >= 33) {
+            wanted.add(Manifest.permission.POST_NOTIFICATIONS)
+        }
+        if (Build.VERSION.SDK_INT >= 37) {
+            wanted.add("android.permission.ACCESS_LOCAL_NETWORK")
+        }
+        val missing = wanted.filter {
+            checkSelfPermission(it) != PackageManager.PERMISSION_GRANTED
+        }
+        if (missing.isNotEmpty()) {
+            requestPermissions(missing.toTypedArray(), 1001)
         }
         addLog("Wireless ADB pairing: searching for the pairing service…")
         startForegroundService(AdbPairingService.startIntent(this))
