@@ -2374,16 +2374,12 @@ class MainActivity : ComponentActivity() {
         startForegroundService(AdbPairingService.startIntent(this))
         runCatching {
             startActivity(
-                Intent("android.settings.WIRELESS_DEBUGGING_SETTINGS")
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    // Lets Settings scroll to and highlight "Wireless debugging".
+                    putExtra(":settings:fragment_args_key", "toggle_adb_wireless")
+                }
             )
-        }.onFailure {
-            runCatching {
-                startActivity(
-                    Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                )
-            }
         }
     }
 
