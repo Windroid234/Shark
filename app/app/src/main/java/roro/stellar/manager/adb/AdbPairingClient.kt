@@ -211,6 +211,7 @@ class AdbPairingClient(private val host: String, private val port: Int, private 
         val pairCodeBytes = pairCode.toByteArray()
         val keyMaterial = try {
             SSLSockets.exportKeyingMaterial(sslSocket, kExportedKeyLabel, null, kExportedKeySize)
+                ?: error("no keying material")
         } catch (t: Throwable) {
             Log.e(TAG, "exportKeyingMaterial failed", t)
             throw t
