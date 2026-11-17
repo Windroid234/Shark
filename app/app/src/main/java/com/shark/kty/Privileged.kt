@@ -30,9 +30,9 @@ class PrivProcess(
 
 object PrivService {
     fun pick(): PrivBackend? = when {
+        WirelessAdb.connected -> PrivBackend.WIRELESS_ADB
         runCatching { Stellar.pingBinder() }.getOrDefault(false) -> PrivBackend.STELLAR
         runCatching { Shizuku.pingBinder() }.getOrDefault(false) -> PrivBackend.SHIZUKU
-        WirelessAdb.connected -> PrivBackend.WIRELESS_ADB
         else -> null
     }
 
