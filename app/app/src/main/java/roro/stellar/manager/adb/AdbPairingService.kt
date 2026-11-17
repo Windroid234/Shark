@@ -486,7 +486,7 @@ class AdbPairingService : Service() {
 
         Notification.Action.Builder(
             null,
-            getString(R.string.retry),
+            getString(R.string.adb_retry),
             pendingIntent
         )
             .build()

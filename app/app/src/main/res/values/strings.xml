@@ -139,7 +139,7 @@
     <string name="connect_service_not_found">ADB connect service not found</string>
     <string name="please_open_app_manually">Open Shark and try again</string>
     <string name="stop_search">Stop</string>
-    <string name="retry">Retry</string>
+    <string name="adb_retry">Retry</string>
     <string name="cannot_find_pairing">Cannot find the pairing service</string>
     <string name="pairing_code">Pairing code</string>
     <string name="enter_pairing_code_action">Enter code</string>
