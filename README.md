@@ -310,7 +310,7 @@ installed alongside this one, but settings and history are not migrated.
 | `2.4.1-en.1` | 2.4 | Auto root on boot (English UI) |
 | `2.4.1-en.2` | 2.4.1 | Device table entry for Xiaomi 18 Pro |
 | `2.4.1-en.3` | 2.4.1 | `libk61821.so` rebuilt with the Xiaomi 18 Pro `6.18.21-g1d099` profile (offsets verified offline against the firmware) |
-| `2.5-en.1` | 2.5 | Xiaomi 18 Fold / Pad 9 Pro Max `6.18.21-g805aa6adea19` profile added (offsets verified offline against the firmware) |
+| `2.5-en.1` | 2.5 | Xiaomi 18 Fold / Pad 9 Pro Max `6.18.21-g805aa6adea19` profile added (**experimental**; values copied from upstream, not yet verified against the matching firmware) |
 
 Each release stamps its own `2.5-en.N` version and is signed with the fork's
 release key. Every release ships the signed APK together with its SHA-256 file.
