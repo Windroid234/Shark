@@ -1306,7 +1306,7 @@ class MainActivity : ComponentActivity() {
     private fun StatusCard(granted: Boolean) {
         val dark = CouiTheme.isDark
         val colors = CouiPageDefaults.themeColors(dark)
-        val backendName = PrivService.pick()?.label ?: "Stellar"
+        val backendName = PrivService.pick()?.label ?: "Wireless ADB"
         val green = if (dark) Color(0xFF1A3825) else Color(0xFFDFFAE4)
         val greenTint = Color(0xFF36D167)
         Group(colors = colors.copy(card = if (granted) green else colors.card)) {
