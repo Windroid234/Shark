@@ -89,6 +89,11 @@ class AdbMdns(
         }
     }
 
+    fun destroy() {
+        stop()
+        handler.removeCallbacksAndMessages(null)
+    }
+
     private fun onDiscoveryStarted() {
         registered = true
         onStatusUpdate?.invoke("Searching for the pairing service…")
