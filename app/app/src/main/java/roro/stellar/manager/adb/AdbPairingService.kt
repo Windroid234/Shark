@@ -23,7 +23,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import roro.stellar.manager.R
+import com.shark.kty.R
 import roro.stellar.manager.StellarSettings
 import kotlin.getValue
 import androidx.core.content.edit
