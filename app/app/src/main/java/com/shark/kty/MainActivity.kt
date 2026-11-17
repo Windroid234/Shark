@@ -2372,6 +2372,19 @@ class MainActivity : ComponentActivity() {
         }
         addLog("Wireless ADB pairing: searching for the pairing service…")
         startForegroundService(AdbPairingService.startIntent(this))
+        runCatching {
+            startActivity(
+                Intent("android.settings.WIRELESS_DEBUGGING_SETTINGS")
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+        }.onFailure {
+            runCatching {
+                startActivity(
+                    Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                )
+            }
+        }
     }
 
     private fun updateAutoRootOnBoot(value: Boolean) {

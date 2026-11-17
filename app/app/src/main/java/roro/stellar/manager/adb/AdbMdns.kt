@@ -293,12 +293,12 @@ class AdbMdns(
         const val TLS_CONNECT = "_adb-tls-connect._tcp"
         const val TLS_PAIRING = "_adb-tls-pairing._tcp"
         const val TAG = "AdbMdns"
-        const val CHECK_INTERVAL_MILLIS = 500L
-        const val INITIAL_DELAY_MILLIS = 2000L
+        const val CHECK_INTERVAL_MILLIS = 2000L
+        const val INITIAL_DELAY_MILLIS = 1000L
         const val RESTART_DELAY_MILLIS = 100L
         const val RETRY_DELAY_MILLIS = 100L
         const val MAX_START_RETRY = 10
-        const val MAX_REFRESH_COUNT = 100
+        const val MAX_REFRESH_COUNT = 30
     }
 }
 
