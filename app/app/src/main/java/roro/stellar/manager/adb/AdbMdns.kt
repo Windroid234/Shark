@@ -4,8 +4,6 @@ import android.content.Context
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Observer
@@ -34,7 +32,6 @@ class AdbMdns(
 
     private val appContext: Context = context.applicationContext
     private val nsdManager: NsdManager = context.getSystemService(NsdManager::class.java)
-    private val handler = Handler(Looper.getMainLooper())
 
     @Volatile
     private var running = false
@@ -44,13 +41,6 @@ class AdbMdns(
 
     private var listener: DiscoveryListener? = null
     private var serviceName: String? = null
-
-    private val timeoutRunnable = Runnable {
-        if (!running) return@Runnable
-        Log.w(TAG, "discovery timed out: $serviceType")
-        stop()
-        onMaxRefresh?.invoke()
-    }
 
     fun start() {
         if (running) return
@@ -69,7 +59,6 @@ class AdbMdns(
         try {
             nsdManager.discoverServices(serviceType, NsdManager.PROTOCOL_DNS_SD, discovery)
             Log.v(TAG, "discovery started: $serviceType")
-            handler.postDelayed(timeoutRunnable, maxRefreshCount * 1000L)
         } catch (e: Exception) {
             Log.e(TAG, "discovery failed to start", e)
             running = false
@@ -80,7 +69,6 @@ class AdbMdns(
     fun stop() {
         if (!running) return
         running = false
-        handler.removeCallbacks(timeoutRunnable)
         val discovery = listener
         listener = null
         if (registered && discovery != null) {
@@ -91,7 +79,6 @@ class AdbMdns(
 
     fun destroy() {
         stop()
-        handler.removeCallbacksAndMessages(null)
     }
 
     private fun onDiscoveryStarted() {
