@@ -313,6 +313,7 @@ installed alongside this one, but settings and history are not migrated.
 | `2.5-en.1` | 2.5 | Xiaomi 18 Fold / Pad 9 Pro Max `6.18.21-g805aa6adea19` profile added (**experimental**; values copied from upstream, not yet verified against the matching firmware) |
 | `2.5-en.2` | 2.5 | **Wireless ADB pairing** (experimental): pair from Settings, auto-grant `WRITE_SECURE_SETTINGS`, then run the root flow over the paired loopback ADB connection — no PC or separate Stellar/Shizuku app |
 | `2.5-en.3` | 2.5 | Wireless ADB polish: opens Developer options scrolled to/highlighting “Wireless debugging”, keeps discovery running until the pairing dialog appears, and returns to the app via `am start` after pairing |
+| `2.5-en.4` | 2.5 | Home action split like upstream: left “Wireless debugging” button (activate/pair) and right root button |
 
 Each release stamps its own `2.5-en.N` version and is signed with the fork's
 release key. Every release ships the signed APK together with its SHA-256 file.
