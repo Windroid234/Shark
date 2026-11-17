@@ -3,6 +3,7 @@ package roro.stellar.manager.adb
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import com.android.org.conscrypt.Conscrypt
 import java.io.Closeable
 import java.io.DataInputStream
 import java.io.DataOutputStream
@@ -18,22 +19,6 @@ private const val kMinSupportedKeyHeaderVersion = 1.toByte()
 private const val kMaxSupportedKeyHeaderVersion = 1.toByte()
 private const val kMaxPeerInfoSize = 8192
 
-/**
- * Android exposes Conscrypt's TLS exporter only through the hidden
- * `com.android.org.conscrypt.Conscrypt` class, which is not part of the
- * public compile SDK. Call it reflectively so the app still compiles.
- */
-private fun exportKeyingMaterial(socket: SSLSocket, label: String, size: Int): ByteArray {
-    val cls = Class.forName("com.android.org.conscrypt.Conscrypt")
-    val method = cls.getMethod(
-        "exportKeyingMaterial",
-        SSLSocket::class.java,
-        String::class.java,
-        ByteArray::class.java,
-        Int::class.javaPrimitiveType
-    )
-    return method.invoke(null, socket, label, null, size) as ByteArray
-}
 private const val kMaxPayloadSize = kMaxPeerInfoSize * 2
 
 private const val kExportedKeyLabel = "adb-label\u0000"
@@ -225,7 +210,7 @@ class AdbPairingClient(private val host: String, private val port: Int, private 
 
         val pairCodeBytes = pairCode.toByteArray()
         val keyMaterial = try {
-            exportKeyingMaterial(sslSocket, kExportedKeyLabel, kExportedKeySize)
+            Conscrypt.exportKeyingMaterial(sslSocket, kExportedKeyLabel, null, kExportedKeySize)
         } catch (t: Throwable) {
             Log.e(TAG, "exportKeyingMaterial failed", t)
             throw t

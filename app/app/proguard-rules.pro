@@ -7,3 +7,5 @@
 -keep class com.stellar.** { *; }
 -dontwarn roro.stellar.**
 -dontwarn com.stellar.**
+
+-dontwarn com.android.org.conscrypt.**
