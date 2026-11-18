@@ -46,6 +46,8 @@ Each kernel version has its own K source file and `libk<version>.so`; there is n
 | `STALE_PLANT` | The previous plant is still running; wait for it to turn into a holder, then retry. |
 | `PLANT_FAIL` | plant keeps the holder and exits; you can retry directly in the same boot. |
 | `LATE_LOAD_FAIL` | The module did not appear within the time limit; check the ksud output in the log, confirm the manager version matches, then retry directly. |
+| `EXIT=13` (`page event ids not found` / `votes=0`) | Turn off every toggle under Developer options -> **System trace**, reboot, then run again. The ftrace ring buffer was too busy to find the page-event pairs. |
+| High memory use after a run | The probe trace can leave ftrace enlarged. The app restores `tracing_on=0` / `buffer_size_kb=1` after a successful run; if it was skipped, do it manually with root. |
 | Kernel panic/reboot | An inherent risk of the 98260 race; reboot and run again. |
 
 ## Run Modes

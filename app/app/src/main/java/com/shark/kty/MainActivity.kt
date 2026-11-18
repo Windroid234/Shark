@@ -2703,6 +2703,21 @@ class MainActivity : ComponentActivity() {
                     selinuxText = se
                 }
                 addLog(if (active) "KernelSU module loaded" else "KernelSU module not loaded")
+                if (active) {
+                    // Issue #3: PROBE_TRACE can leave ftrace enlarged. Restore it
+                    // after a successful run so memory usage returns to normal.
+                    val restoreTrace = "echo 0 > /sys/kernel/tracing/tracing_on 2>/dev/null; " +
+                        "echo 1 > /sys/kernel/tracing/buffer_size_kb 2>/dev/null; " +
+                        "echo 0 > /sys/kernel/debug/tracing/tracing_on 2>/dev/null; " +
+                        "echo 1 > /sys/kernel/debug/tracing/buffer_size_kb 2>/dev/null"
+                    val restoreRc = runCatching {
+                        PrivService.newProcess(
+                            arrayOf("su", "-c", restoreTrace),
+                            shizukuEnv(), "/"
+                        ).waitFor()
+                    }.getOrDefault(-1)
+                    addLog(if (restoreRc == 0) "Restored ftrace state" else "ftrace restore skipped rc=$restoreRc")
+                }
                 if (rc == 0 && active && !softReboot) {
                     withContext(Dispatchers.Main) { launchManager() }
                 }

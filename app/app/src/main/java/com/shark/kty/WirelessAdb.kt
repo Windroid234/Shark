@@ -6,7 +6,6 @@ import roro.stellar.manager.adb.AdbClient
 import roro.stellar.manager.adb.AdbKey
 import roro.stellar.manager.adb.PreferenceAdbKeyStore
 import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
 import java.io.OutputStream
 import java.io.PipedInputStream
 import java.io.PipedOutputStream
@@ -74,33 +73,51 @@ object WirelessAdb {
 
     /** Runs a shell command on a fresh connection and returns (exit code, stdout). */
     fun runShell(command: String): Pair<Int, String> {
-        val currentKey = key ?: return -1 to "no wireless ADB connection"
+        val output = StringBuilder()
+        val rc = streamShell(command) { output.append(it) }
+        return rc to output.toString()
+    }
+
+    /**
+     * Streams shell output line by line on a fresh connection. The trailing
+     * exit-code marker is consumed internally and never forwarded.
+     */
+    fun streamShell(command: String, onLine: (String) -> Unit): Int {
+        val currentKey = key ?: return -1
         val currentPort = port
         val marker = "__SHARK_RC__"
-        val output = ByteArrayOutputStream()
+        var rc = 0
         return runCatching {
             AdbClient(host, currentPort, currentKey).use { client ->
                 client.connect()
+                val pending = StringBuilder()
                 client.shellCommand("($command); echo $marker=\$?") { chunk ->
-                    synchronized(output) { output.write(chunk) }
+                    pending.append(String(chunk, Charsets.UTF_8))
+                    while (true) {
+                        val end = pending.indexOf("\n")
+                        if (end < 0) break
+                        val line = pending.substring(0, end).trimEnd('\r')
+                        pending.delete(0, end + 1)
+                        if (line.startsWith("$marker=")) {
+                            rc = line.substringAfter('=').toIntOrNull() ?: 0
+                        } else {
+                            onLine(line + "\n")
+                        }
+                    }
+                }
+                if (pending.isNotEmpty()) {
+                    val line = pending.toString().trimEnd('\r')
+                    if (line.startsWith("$marker=")) {
+                        rc = line.substringAfter('=').toIntOrNull() ?: 0
+                    } else {
+                        onLine(line + "\n")
+                    }
                 }
             }
-            val text = output.toString(Charsets.UTF_8.name())
-            val lines = text.split('\n')
-            var rc = 0
-            val kept = StringBuilder()
-            for (line in lines) {
-                val trimmed = line.trim()
-                if (trimmed.startsWith("$marker=")) {
-                    rc = trimmed.substringAfter('=').toIntOrNull() ?: 0
-                } else {
-                    kept.append(line).append('\n')
-                }
-            }
-            rc to kept.toString()
+            rc
         }.getOrElse {
             Log.e(TAG, "shell command failed: $command", it)
-            -1 to (it.message ?: "adb shell failed")
+            -1
         }
     }
 
@@ -114,12 +131,13 @@ object WirelessAdb {
         var exitCode = -1
         val command = cmd.joinToString(" ") { quote(it) }
         val thread = Thread {
-            val (code, text) = runShell(command)
-            exitCode = code
-            runCatching {
-                outPipe.write(text.toByteArray())
-                outPipe.flush()
+            val code = streamShell(command) { text ->
+                runCatching {
+                    outPipe.write(text.toByteArray())
+                    outPipe.flush()
+                }
             }
+            exitCode = code
             runCatching { outPipe.close() }
         }.apply {
             isDaemon = true
