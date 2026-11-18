@@ -2705,18 +2705,31 @@ class MainActivity : ComponentActivity() {
                 addLog(if (active) "KernelSU module loaded" else "KernelSU module not loaded")
                 if (active) {
                     // Issue #3: PROBE_TRACE can leave ftrace enlarged. Restore it
-                    // after a successful run so memory usage returns to normal.
+                    // after a successful run, but never block the flow on a
+                    // manager root prompt: give it 3 seconds, then move on.
                     val restoreTrace = "echo 0 > /sys/kernel/tracing/tracing_on 2>/dev/null; " +
                         "echo 1 > /sys/kernel/tracing/buffer_size_kb 2>/dev/null; " +
                         "echo 0 > /sys/kernel/debug/tracing/tracing_on 2>/dev/null; " +
                         "echo 1 > /sys/kernel/debug/tracing/buffer_size_kb 2>/dev/null"
-                    val restoreRc = runCatching {
-                        PrivService.newProcess(
-                            arrayOf("su", "-c", restoreTrace),
-                            shizukuEnv(), "/"
-                        ).waitFor()
-                    }.getOrDefault(-1)
-                    addLog(if (restoreRc == 0) "Restored ftrace state" else "ftrace restore skipped rc=$restoreRc")
+                    Thread {
+                        val process = runCatching {
+                            PrivService.newProcess(
+                                arrayOf("su", "-c", restoreTrace),
+                                shizukuEnv(), "/"
+                            )
+                        }.getOrNull()
+                        if (process != null) {
+                            val waiter = Thread { runCatching { process.waitFor() } }
+                            waiter.start()
+                            waiter.join(3000)
+                            if (waiter.isAlive) {
+                                addLog("ftrace restore timed out (approve root in the manager)")
+                                runCatching { process.getInputStream().close() }
+                            } else {
+                                addLog("Restored ftrace state")
+                            }
+                        }
+                    }.apply { isDaemon = true }.start()
                 }
                 if (rc == 0 && active && !softReboot) {
                     withContext(Dispatchers.Main) { launchManager() }
