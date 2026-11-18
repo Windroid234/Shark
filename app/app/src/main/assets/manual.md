@@ -45,6 +45,8 @@ Each kernel version has its own K source file and `libk<version>.so`; there is n
 | `MANAGER` / `KSUD_MISSING` | Install the corresponding manager APK before running. |
 | `STALE_PLANT` | The previous plant is still running; wait for it to turn into a holder, then retry. |
 | `PLANT_FAIL` | plant keeps the holder and exits; you can retry directly in the same boot. |
+| `FAIL=fake-cred` / `FAIL_EXIT=fake-cred` (often exit 13) | The race missed and a holder/zombie remains. Wait 5-10 seconds and retry once; if it fails again or `STALE_PLANT` appears, reboot before retrying. |
+| Two or more consecutive failures | Reboot before the next attempt. A clean boot is more reliable than repeated retries. |
 | `LATE_LOAD_FAIL` | The module did not appear within the time limit; check the ksud output in the log, confirm the manager version matches, then retry directly. |
 | `EXIT=13` (`page event ids not found` / `votes=0`) | Turn off every toggle under Developer options -> **System trace**, reboot, then run again. The ftrace ring buffer was too busy to find the page-event pairs. |
 | High memory use after a run | The probe trace can leave ftrace enlarged. The app restores `tracing_on=0` / `buffer_size_kb=1` after a successful run; if it was skipped, do it manually with root. |
