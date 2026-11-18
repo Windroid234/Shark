@@ -132,12 +132,17 @@ object WirelessAdb {
     /**
      * Process-compatible wrapper. Output is streamed through a pipe so the
      * existing log readers keep working, and waitFor() returns the exit code.
+     *
+     * The environment and working directory matter: the late-load worker reads
+     * PYB110_* variables to find ksud and the app files directory. Stellar and
+     * Shizuku pass them directly, so the wireless backend has to export them
+     * into the shell before running the command.
      */
-    fun newProcess(cmd: Array<String>): PrivProcess {
+    fun newProcess(cmd: Array<String>, env: Array<String>? = null, dir: String? = null): PrivProcess {
         val outPipe = PipedOutputStream()
         val outIn = PipedInputStream(outPipe, 64 * 1024)
         var exitCode = -1
-        val command = cmd.joinToString(" ") { quote(it) }
+        val command = buildShellCommand(cmd, env, dir)
         val thread = Thread {
             val code = streamShell(command) { text ->
                 runCatching {
@@ -159,6 +164,21 @@ object WirelessAdb {
             runCatching { thread.join() }
             exitCode
         }
+    }
+
+    private fun buildShellCommand(cmd: Array<String>, env: Array<String>?, dir: String?): String {
+        val args = cmd.joinToString(" ") { quote(it) }
+        if (env.isNullOrEmpty() && dir == null) return args
+        val script = buildString {
+            env?.forEach { entry ->
+                val key = entry.substringBefore('=')
+                val value = entry.substringAfter('=', "")
+                if (key.isNotEmpty()) append("export ").append(key).append('=').append(quote(value)).append("; ")
+            }
+            if (dir != null) append("cd ").append(quote(dir)).append(" && ")
+            append(args)
+        }
+        return "sh -c " + quote(script)
     }
 
     private fun quote(arg: String): String =

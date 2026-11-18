@@ -71,7 +71,7 @@ object PrivService {
                     ParcelFileDescriptor.AutoCloseInputStream(p.getErrorStream())
                 ) { p.waitFor() }
             }
-            PrivBackend.WIRELESS_ADB -> WirelessAdb.newProcess(cmd)
+            PrivBackend.WIRELESS_ADB -> WirelessAdb.newProcess(cmd, env, dir)
             null -> error("no privileged backend (Stellar/Shizuku/Wireless ADB)")
         }
 
