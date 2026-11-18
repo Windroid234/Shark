@@ -46,6 +46,7 @@ Each kernel version has its own K source file and `libk<version>.so`; there is n
 | `STALE_PLANT` | The previous plant is still running; wait for it to turn into a holder, then retry. |
 | `PLANT_FAIL` | plant keeps the holder and exits; you can retry directly in the same boot. |
 | `FAIL=fake-cred` / `FAIL_EXIT=fake-cred` (often exit 13) | The race missed and a holder/zombie remains. Wait 5-10 seconds and retry once; if it fails again or `STALE_PLANT` appears, reboot before retrying. |
+| `FAIL=selinux` / `FAIL_EXIT=selinux` (exit 13) | The SELinux write missed and the holder/zombie stays parked. Retry once after 5-10 seconds; if the retry logs the **same `target=` / `etid=` values** (the holder was reused) or `STALE_PLANT`, reboot first. |
 | Two or more consecutive failures | Reboot before the next attempt. A clean boot is more reliable than repeated retries. |
 | `LATE_LOAD_FAIL` | The module did not appear within the time limit; check the ksud output in the log, confirm the manager version matches, then retry directly. |
 | `EXIT=13` (`page event ids not found` / `votes=0`) | Turn off every toggle under Developer options -> **System trace**, reboot, then run again. The ftrace ring buffer was too busy to find the page-event pairs. |
