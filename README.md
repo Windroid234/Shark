@@ -314,6 +314,14 @@ installed alongside this one, but settings and history are not migrated.
 | `2.5-en.2` | 2.5 | **Wireless ADB pairing** (experimental): pair from Settings, auto-grant `WRITE_SECURE_SETTINGS`, then run the root flow over the paired loopback ADB connection — no PC or separate Stellar/Shizuku app |
 | `2.5-en.3` | 2.5 | Wireless ADB polish: opens Developer options scrolled to/highlighting “Wireless debugging”, keeps discovery running until the pairing dialog appears, and returns to the app via `am start` after pairing |
 | `2.5-en.4` | 2.5 | Home action split like upstream: left “Wireless debugging” button (activate/pair) and right root button |
+| `2.5-en.5` | 2.5 | Shortened the left button to “Wireless ADB” and gave both buttons the same accent color |
+| `2.5-en.6` | 2.5 | Equal 50:50 button widths and single-line labels |
+| `2.5-en.7` | 2.5 | Status card follows the active backend (`Wireless ADB authorized` / `not authorized`) instead of a fixed Stellar label |
+| `2.5-en.8` | 2.5 | Fixed the wireless backend: one ADB connection per command, so the exploit no longer exits immediately with `-1`; translated the ported ADB log/error strings to English |
+| `2.5-en.9` | 2.5 | Stream the exploit output into the log live; restore ftrace (`tracing_on=0`, `buffer_size_kb=1`) after a successful run; document the `EXIT=13` system-trace workaround |
+| `2.5-en.10` | 2.5 | ftrace restore no longer blocks the flow on a manager root prompt (3 s timeout) |
+| `2.5-en.11` | 2.5 | Stop reading as soon as the exploit exit marker arrives and add a 180 s watchdog, so a failed plant that parks a holder cannot hang the app |
+| `2.5-en.12` | 2.5 | Manual: retry/reboot guidance for `FAIL=fake-cred` and repeated `EXIT=13` failures |
 
 Each release stamps its own `2.5-en.N` version and is signed with the fork's
 release key. Every release ships the signed APK together with its SHA-256 file.
