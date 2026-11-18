@@ -56,7 +56,7 @@ class AdbClient(private val host: String, private val port: Int, private val key
         var message = read()
         if (message.command == A_STLS) {
             if (!BuildUtils.atLeast29) {
-                error("Android 9 之前不支持通过 TLS 连接 adb")
+                error("adb over TLS requires Android 9+")
             }
             write(A_STLS, A_STLS_VERSION, 0)
 
@@ -64,7 +64,7 @@ class AdbClient(private val host: String, private val port: Int, private val key
             tlsSocket = sslContext.socketFactory.createSocket(socket, host, port, true) as SSLSocket
             tlsSocket.soTimeout = AUTH_TIMEOUT_MILLIS
             tlsSocket.startHandshake()
-            Log.d(TAG, "握手成功")
+            Log.d(TAG, "handshake succeeded")
 
             tlsInputStream = DataInputStream(tlsSocket.inputStream)
             tlsOutputStream = DataOutputStream(tlsSocket.outputStream)
@@ -72,7 +72,7 @@ class AdbClient(private val host: String, private val port: Int, private val key
 
             message = read()
         } else if (message.command == A_AUTH) {
-            if (message.command != A_AUTH && message.arg0 != ADB_AUTH_TOKEN) error("不是 A_AUTH ADB_AUTH_TOKEN")
+            if (message.command != A_AUTH && message.arg0 != ADB_AUTH_TOKEN) error("expected A_AUTH / ADB_AUTH_TOKEN")
             write(A_AUTH, ADB_AUTH_SIGNATURE, 0, key.sign(message.data))
 
             message = read()
@@ -82,7 +82,7 @@ class AdbClient(private val host: String, private val port: Int, private val key
             }
         }
 
-        if (message.command != A_CNXN) error("不是 A_CNXN")
+        if (message.command != A_CNXN) error("expected A_CNXN")
 
         socket.soTimeout = 0
         if (useTls) tlsSocket.soTimeout = 0
@@ -107,7 +107,7 @@ class AdbClient(private val host: String, private val port: Int, private val key
                         write(A_CLSE, localId, remoteId)
                         break
                     } else {
-                        error("不是 A_WRTE 或 A_CLSE")
+                        error("expected A_WRTE or A_CLSE")
                     }
                 }
             }
@@ -116,7 +116,7 @@ class AdbClient(private val host: String, private val port: Int, private val key
                 write(A_CLSE, localId, remoteId)
             }
             else -> {
-                error("不是 A_OKAY 或 A_CLSE")
+                error("expected A_OKAY or A_CLSE")
             }
         }
     }
@@ -140,14 +140,14 @@ class AdbClient(private val host: String, private val port: Int, private val key
                         write(A_CLSE, localId, remoteId)
                         break
                     } else {
-                        error("不是 A_WRTE 或 A_CLSE")
+                        error("expected A_WRTE or A_CLSE")
                     }
                 }
             }
 
             else -> {
-                Log.e(TAG, "不是A_OKAY响应")
-                error("不是 A_OKAY")
+                Log.e(TAG, "unexpected A_OKAY response")
+                error("expected A_OKAY")
             }
         }
     }
@@ -171,14 +171,14 @@ class AdbClient(private val host: String, private val port: Int, private val key
                         write(A_CLSE, localId, remoteId)
                         break
                     } else {
-                        error("不是 A_WRTE 或 A_CLSE")
+                        error("expected A_WRTE or A_CLSE")
                     }
                 }
             }
 
             else -> {
                 Log.e(TAG, "not A_OKAY")
-                error("不是 A_OKAY")
+                error("expected A_OKAY")
             }
         }
     }
@@ -199,7 +199,7 @@ class AdbClient(private val host: String, private val port: Int, private val key
     private fun write(message: AdbMessage) {
         outputStream.write(message.toByteArray())
         outputStream.flush()
-        Log.d(TAG, "写入 ${message.toStringShort()}")
+        Log.d(TAG, "write ${message.toStringShort()}")
     }
 
     private fun read(): AdbMessage {
@@ -224,7 +224,7 @@ class AdbClient(private val host: String, private val port: Int, private val key
         
         val message = AdbMessage(command, arg0, arg1, dataLength, checksum, magic, data)
         message.validateOrThrow()
-        Log.d(TAG, "读取 ${message.toStringShort()}")
+        Log.d(TAG, "read ${message.toStringShort()}")
         return message
     }
 

@@ -47,7 +47,7 @@ private class PeerInfo(
             put(data)
         }
 
-        Log.d(TAG, "写入对等信息 ${toStringShort()}")
+        Log.d(TAG, "write peer info ${toStringShort()}")
     }
 
     override fun toString(): String = "PeerInfo(${toStringShort()})"
@@ -82,7 +82,7 @@ private class PairingPacketHeader(
             putInt(payload)
         }
 
-        Log.d(TAG, "写入配对包头 ${toStringShort()}")
+        Log.d(TAG, "write pairing header ${toStringShort()}")
     }
 
     override fun toString(): String = "PairingPacketHeader(${toStringShort()})"
@@ -97,20 +97,20 @@ private class PairingPacketHeader(
             val payload = buffer.int
 
             if (version !in kMinSupportedKeyHeaderVersion..kMaxSupportedKeyHeaderVersion) {
-                Log.e(TAG, "配对包头版本不匹配 (我们=$kCurrentKeyHeaderVersion 对方=${version})")
+                Log.e(TAG, "pairing header version mismatch (ours=$kCurrentKeyHeaderVersion peer=${version})")
                 return null
             }
             if (type != Type.SPAKE2_MSG.value && type != Type.PEER_INFO.value) {
-                Log.e(TAG, "未知配对包类型=${type}")
+                Log.e(TAG, "unknown pairing packet type=${type}")
                 return null
             }
             if (payload !in 1..kMaxPayloadSize) {
-                Log.e(TAG, "头部载荷不在安全载荷大小范围内 (大小=${payload})")
+                Log.e(TAG, "payload outside safe size range (size=${payload})")
                 return null
             }
 
             val header = PairingPacketHeader(version, type, payload)
-            Log.d(TAG, "读取配对包头 ${header.toStringShort()}")
+            Log.d(TAG, "read pairing header ${header.toStringShort()}")
             return header
         }
     }
@@ -203,7 +203,7 @@ class AdbPairingClient(private val host: String, private val port: Int, private 
         val sslSocket = sslContext.socketFactory.createSocket(socket, host, port, true) as SSLSocket
         sslSocket.soTimeout = 30000
         sslSocket.startHandshake()
-        Log.d(TAG, "握手成功")
+        Log.d(TAG, "handshake succeeded")
 
         inputStream = DataInputStream(sslSocket.inputStream)
         outputStream = DataOutputStream(sslSocket.outputStream)
@@ -241,7 +241,7 @@ class AdbPairingClient(private val host: String, private val port: Int, private 
 
         outputStream.write(buffer.array())
         outputStream.write(payload)
-        Log.d(TAG, "写入载荷，大小=${payload.size}")
+        Log.d(TAG, "write payload, size=${payload.size}")
     }
 
     private fun doExchangeMsgs(): Boolean {
@@ -277,7 +277,7 @@ class AdbPairingClient(private val host: String, private val port: Int, private 
 
         val decrypted = pairingContext.decrypt(theirMessage) ?: throw AdbInvalidPairingCodeException()
         if (decrypted.size != kMaxPeerInfoSize) {
-            Log.e(TAG, "获得大小=${decrypted.size} 对等信息大小=$kMaxPeerInfoSize")
+            Log.e(TAG, "received size=${decrypted.size} peer info size=$kMaxPeerInfoSize")
             return false
         }
         

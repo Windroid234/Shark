@@ -40,7 +40,7 @@ class AdbMessage(
         command == magic xor -0x1 && (data_length == 0 || crc32(data) == data_crc32)
 
     fun validateOrThrow() {
-        if (!validate()) throw IllegalArgumentException("错误的消息 ${toStringShort()}")
+        if (!validate()) throw IllegalArgumentException("invalid message ${toStringShort()}")
     }
 
     fun toByteArray(): ByteArray {

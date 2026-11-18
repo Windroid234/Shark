@@ -184,7 +184,7 @@ class AdbKey(private val adbKeyStore: AdbKeyStore, name: String) {
             private val alias = "key"
 
             override fun chooseClientAlias(keyTypes: Array<out String>, issuers: Array<out Principal>?, socket: Socket?): String? {
-                Log.d(TAG, "选择客户端别名: keyType=${keyTypes.contentToString()}, issuers=${issuers?.contentToString()}")
+                Log.d(TAG, "selected client alias: keyType=${keyTypes.contentToString()}, issuers=${issuers?.contentToString()}")
                 for (keyType in keyTypes) {
                     if (keyType == "RSA") return alias
                 }
@@ -192,12 +192,12 @@ class AdbKey(private val adbKeyStore: AdbKeyStore, name: String) {
             }
 
             override fun getCertificateChain(alias: String?): Array<X509Certificate>? {
-                Log.d(TAG, "获取证书链: alias=$alias")
+                Log.d(TAG, "certificate chain: alias=$alias")
                 return if (alias == this.alias) arrayOf(certificate) else null
             }
 
             override fun getPrivateKey(alias: String?): PrivateKey? {
-                Log.d(TAG, "获取私钥: alias=$alias")
+                Log.d(TAG, "private key: alias=$alias")
                 return if (alias == this.alias) privateKey else null
             }
 

@@ -72,7 +72,7 @@ class AdbPairingService : Service() {
     private var discoveredPort: Int = -1
 
     private val observer = Observer<Int> { port ->
-        Log.i(tag, "配对服务端口: $port")
+        Log.i(tag, "pairing service port: $port")
         if (port <= 0) {
             return@Observer
         }
@@ -87,9 +87,9 @@ class AdbPairingService : Service() {
             } else {
                 startForeground(notificationId, notification)
             }
-            Log.i(tag, "已更新通知为输入配对码")
+            Log.i(tag, "notification updated: enter pairing code")
         } catch (e: Exception) {
-            Log.e(tag, "更新通知失败", e)
+            Log.e(tag, "failed to update notification", e)
             getSystemService(NotificationManager::class.java).notify(notificationId, notification)
 
             val alertNotification = Notification.Builder(this, alertNotificationChannel)
@@ -164,7 +164,7 @@ class AdbPairingService : Service() {
                 startForeground(notificationId, notification)
             }
         } catch (e: Throwable) {
-            Log.e(tag, "启动前台服务失败", e)
+            Log.e(tag, "failed to start foreground service", e)
 
             if (atLeast31
                 && e is ForegroundServiceStartNotAllowedException) {
@@ -191,7 +191,7 @@ class AdbPairingService : Service() {
         try {
             adbMdns?.stop()
         } catch (e: Exception) {
-            Log.e(tag, "停止搜索失败", e)
+            Log.e(tag, "failed to stop discovery", e)
         }
     }
 
@@ -208,7 +208,7 @@ class AdbPairingService : Service() {
 
     private fun onStart(): Notification {
         if (isRunning && started) {
-            Log.i(tag, "服务已在运行，忽略重复启动")
+            Log.i(tag, "service already running; ignoring duplicate start")
             return searchingNotification
         }
         isRunning = true
@@ -229,7 +229,7 @@ class AdbPairingService : Service() {
     }
 
     private fun onSearchMaxRefresh() {
-        Log.i(tag, "搜索次数已达上限")
+        Log.i(tag, "discovery attempt limit reached")
         stopSearch()
         val notification = createMaxRefreshNotification()
         try {
@@ -240,7 +240,7 @@ class AdbPairingService : Service() {
                 startForeground(notificationId, notification)
             }
         } catch (e: Exception) {
-            Log.e(tag, "更新前台通知失败", e)
+            Log.e(tag, "failed to update foreground notification", e)
             getSystemService(NotificationManager::class.java).notify(notificationId, notification)
         }
     }
@@ -279,7 +279,7 @@ class AdbPairingService : Service() {
     private fun handleResult(success: Boolean) {
         retryHandler.post {
             if (success) {
-                Log.i(tag, "配对成功，开始搜索连接服务")
+                Log.i(tag, "paired; searching for the connect service")
                 stopSearch()
 
                 val successNotification = Notification.Builder(this, notificationChannel)
@@ -297,7 +297,7 @@ class AdbPairingService : Service() {
                         startForeground(notificationId, successNotification)
                     }
                 } catch (e: Exception) {
-                    Log.e(tag, "更新前台通知失败", e)
+                    Log.e(tag, "failed to update foreground notification", e)
                 }
 
                 searchConnectService()
@@ -305,7 +305,7 @@ class AdbPairingService : Service() {
                 val title = getString(R.string.pairing_failed_retrying)
                 val text = getString(R.string.please_wait_auto_return)
 
-                Log.i(tag, "配对失败，正在重试")
+                Log.i(tag, "pairing failed; retrying")
 
                 val failureNotification = Notification.Builder(this, notificationChannel)
                     .setSmallIcon(R.mipmap.ic_launcher)
@@ -322,7 +322,7 @@ class AdbPairingService : Service() {
                         startForeground(notificationId, failureNotification)
                     }
                 } catch (e: Exception) {
-                    Log.e(tag, "更新前台通知失败", e)
+                    Log.e(tag, "failed to update foreground notification", e)
                 }
 
                 retryHandler.postDelayed({
@@ -335,7 +335,7 @@ class AdbPairingService : Service() {
                             startForeground(notificationId, retryNotification)
                         }
                     } catch (e: Exception) {
-                        Log.e(tag, "更新前台通知失败", e)
+                        Log.e(tag, "failed to update foreground notification", e)
                     }
                 }, 2000)
             }
@@ -344,7 +344,7 @@ class AdbPairingService : Service() {
 
     private fun searchConnectService() {
         val connectObserver = Observer<Int> { port ->
-            Log.i(tag, "连接服务端口: $port")
+            Log.i(tag, "connect service port: $port")
             if (port <= 0) return@Observer
 
             connectMdns?.destroy()
@@ -358,7 +358,7 @@ class AdbPairingService : Service() {
             AdbMdns.TLS_CONNECT,
             connectObserver,
             onMaxRefresh = {
-                Log.w(tag, "搜索连接服务次数已达上限")
+                Log.w(tag, "connect service discovery limit reached")
                 onConnectServiceMaxRefresh()
             }
         ).apply { start() }
@@ -366,7 +366,7 @@ class AdbPairingService : Service() {
 
     private fun onConnectServiceFound(port: Int) {
         retryHandler.post {
-            Log.i(tag, "找到连接服务端口: $port")
+            Log.i(tag, "found connect service port: $port")
 
             val preferences = StellarSettings.getPreferences()
             val tcpipPortEnabled = preferences.getBoolean(StellarSettings.TCPIP_PORT_ENABLED, true)
@@ -376,7 +376,7 @@ class AdbPairingService : Service() {
                 preferences.edit {
                     putString(StellarSettings.TCPIP_PORT, port.toString())
                 }
-                Log.i(tag, "自动设置 TCP 端口: $port")
+                Log.i(tag, "auto-set TCP port: $port")
             }
 
             grantSecureSettingsPermission(port)
@@ -406,7 +406,7 @@ class AdbPairingService : Service() {
                     client.connect()
                     val command = "pm grant $packageName android.permission.WRITE_SECURE_SETTINGS"
                     client.shellCommand(command) { output ->
-                        Log.d(tag, "授权命令输出: ${String(output)}")
+                        Log.d(tag, "grant command output: ${String(output)}")
                     }
                     // Bring the app back to the foreground through the shell user;
                     // a background service cannot start activities on Android 17.
@@ -419,9 +419,9 @@ class AdbPairingService : Service() {
                         Log.w(tag, "am start failed", it)
                     }
                 }
-                Log.i(tag, "WRITE_SECURE_SETTINGS 权限授权成功")
+                Log.i(tag, "WRITE_SECURE_SETTINGS granted")
             } catch (e: Exception) {
-                Log.e(tag, "自动授权 WRITE_SECURE_SETTINGS 失败", e)
+                Log.e(tag, "failed to grant WRITE_SECURE_SETTINGS", e)
             }
 
             retryHandler.post {
@@ -444,7 +444,7 @@ class AdbPairingService : Service() {
 
     private fun onConnectServiceMaxRefresh() {
         retryHandler.post {
-            Log.w(tag, "连接服务搜索次数已达上限，尝试使用系统端口")
+            Log.w(tag, "connect service discovery limit reached; trying the system port")
 
             val systemPort = roro.stellar.manager.util.EnvironmentUtils.getAdbTcpPort()
             if (systemPort in 1..65535) {
