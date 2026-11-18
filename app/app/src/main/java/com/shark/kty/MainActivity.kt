@@ -2803,12 +2803,23 @@ class MainActivity : ComponentActivity() {
                 // stream closed by waitFor() cleanup
             }
         }.apply { isDaemon = true; start() }
-        val rc = p.waitFor()
+        var rc = -1
+        val waiter = Thread { rc = p.waitFor() }.apply {
+            isDaemon = true
+            start()
+        }
+        waiter.join(180_000)
+        val timedOut = waiter.isAlive
+        if (timedOut) {
+            addLog("exploit did not exit within 180s; abandoning the wait")
+            runCatching { out.close() }
+            runCatching { err.close() }
+        }
         runCatching { out.close() }
         runCatching { err.close() }
         t1.join(2000)
         t2.join(2000)
-        return rc
+        return if (timedOut) -1 else rc
     }
 
     override fun onDestroy() {

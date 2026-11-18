@@ -81,13 +81,17 @@ object WirelessAdb {
     /**
      * Streams shell output line by line on a fresh connection. The trailing
      * exit-code marker is consumed internally and never forwarded.
+     *
+     * The exploit can park a holder process that inherits stdout, so the ADB
+     * stream may never send A_CLSE. As soon as the marker line arrives we stop
+     * reading and return the exit code instead of waiting forever.
      */
     fun streamShell(command: String, onLine: (String) -> Unit): Int {
         val currentKey = key ?: return -1
         val currentPort = port
         val marker = "__SHARK_RC__"
         var rc = 0
-        return runCatching {
+        return try {
             AdbClient(host, currentPort, currentKey).use { client ->
                 client.connect()
                 val pending = StringBuilder()
@@ -100,9 +104,9 @@ object WirelessAdb {
                         pending.delete(0, end + 1)
                         if (line.startsWith("$marker=")) {
                             rc = line.substringAfter('=').toIntOrNull() ?: 0
-                        } else {
-                            onLine(line + "\n")
+                            throw MarkerSeen(rc)
                         }
+                        onLine(line + "\n")
                     }
                 }
                 if (pending.isNotEmpty()) {
@@ -115,11 +119,15 @@ object WirelessAdb {
                 }
             }
             rc
-        }.getOrElse {
-            Log.e(TAG, "shell command failed: $command", it)
+        } catch (marker: MarkerSeen) {
+            marker.rc
+        } catch (t: Throwable) {
+            Log.e(TAG, "shell command failed: $command", t)
             -1
         }
     }
+
+    private class MarkerSeen(val rc: Int) : RuntimeException()
 
     /**
      * Process-compatible wrapper. Output is streamed through a pipe so the
