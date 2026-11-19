@@ -1,130 +1,107 @@
-# Experimental: persistent ShellServer
+# Experimental: persistent ShellServer (upstream-compatible)
 
 Status: **experimental branch only**. Do not tag or publish a release from this
 work. `v2.5.1-en.2` stays the public Latest build.
 
-## Goal
+## What upstream actually does
 
-Replace the per-command ADB backend with a persistent privileged shell process
-launched through `app_process` as the `shell` user, similar in role to the
-upstream `ShellSupervisorService` + `ShellServer`, but with our own protocol.
+Checked against the upstream 2.5.1 APK:
 
-## Why
+- `com.shark.kty.shell.ShellBinder` extends
+  `moe.shizuku.server.IShizukuService.Stub` (Shizuku server API, version 13).
+- `ShellServer` (running as the `shell` user through `app_process`) creates that
+  binder and hands it to the app through the Shizuku client provider:
+  - authority: `com.shark.kty.shizuku`
+  - method: `sendBinder`
+  - extra key: `moe.shizuku.privileged.api.intent.extra.BINDER`
+- Re-delivery is triggered by watching
+  `/sdcard/Android/data/com.shark.kty/files/binder-request` (mtime change).
+- `ShellSupervisorService` starts and keeps the process alive with
+  `app_process -Djava.class.path=<apk> /system/bin com.shark.kty.shell.ShellServer`.
+- `RemoteProcessImpl` implements `IRemoteProcess.Stub`, returning
+  `ParcelFileDescriptor` pipes for stdin/stdout/stderr.
 
-- Avoid opening a new ADB connection for every command
-- Keep one long-lived shell process for the whole root flow
-- Provide the foundation for wired ADB activation (PC starts the server)
-- Make reconnection cheaper after a short network drop
-
-## Non-goals
-
-- No public release until the whole flow is validated
-- No changes to the stable branch while this is in progress
+Our app already declares `rikka.shizuku.ShizukuProvider`
+(`${applicationId}.shizuku`, V3 support) and depends on the Shizuku API/AIDL, so
+the existing `PrivService.SHIZUKU` path can consume this binder unchanged.
 
 ## Architecture
 
 ```
-Shark app (uid app)
-  │  LocalSocket (abstract name), token + peer-UID check
-  ▼
-ShellServer process (uid shell, app_process)
-  │  ProcessBuilder / Runtime.exec
-  ▼
-shell commands (id, exploit binary, ksud, ...)
+Shark app (uid app)                         ShellServer (uid shell)
+  ShizukuProvider  <-- sendBinder(Binder) --  ShellBinder (IShizukuService.Stub)
+  Shizuku API                                  │
+  PrivService.SHIZUKU ── newProcess() ───────► RemoteProcessImpl
+                                               │ ProcessBuilder
+                                               ▼ shell commands / exploit
 ```
 
-### Components
+No custom socket and no new private protocol are needed.
 
-1. `com.shark.kty.shell.ShellServer`
-   - `app_process` entry point
-   - Creates an abstract `LocalServerSocket`
-   - Accepts one client at a time, verifies peer UID == app UID
-   - Executes commands with env/dir, streams stdout/stderr and exit code
+## Components to add
 
-2. `ShellServerClient`
-   - Connects to the abstract socket
-   - Sends `exec(cmd[], env[], dir)` and streams output
-   - Returns a `PrivProcess` compatible wrapper
+1. `com.shark.kty.shell.ShellBinder`
+   - Implements the IShizukuService methods the app uses:
+     `newProcess`, `getVersion`, `getUid`, `getSELinuxContext`,
+     `getSystemProperty`, `setSystemProperty`, permission checks, `exit`
+   - Other AIDL methods return safe defaults
+   - Custom `TRANSACTION_PROBE` for liveness (upstream uses `0x5348` / magic `0x534b`)
 
-3. `ShellSupervisorService`
-   - Foreground service owning the server lifecycle
-   - Starts the server through the current ADB backend when needed
-   - Restarts it if it dies; stores socket name + token in prefs
+2. `com.shark.kty.shell.RemoteProcessImpl`
+   - `ProcessBuilder(cmd).directory(dir).environment(env)`
+   - `ParcelFileDescriptor.createPipe()` for stdin/stdout/stderr
+   - Pump threads; `waitFor`, `exitValue`, `alive`, `destroy`
 
-4. `PrivService`
-   - New optional backend `SHELL_SERVER`
-   - Falls back to `WIRELESS_ADB` when the server is not running
+3. `com.shark.kty.shell.ShellServer`
+   - `main()`: create binder, watch the request file, deliver through
+     `ContentProvider.call("sendBinder", …)`
+   - Loops forever; the supervisor restarts it if it dies
 
-## Protocol (draft)
+4. `ShellSupervisorService`
+   - Foreground service, "privileged shell keeper"
+   - Starts the server through the current ADB backend:
+     `CLASSPATH=<apk> setsid app_process /system/bin --nice-name=shark_shell com.shark.kty.shell.ShellServer`
+   - Watches the binder; restarts on loss
 
-Binary frames via `DataInputStream` / `DataOutputStream`:
-
-```
-request:
-  int  magic "SHSK"
-  int  version = 1
-  int  commandCount
-  UTF  command[i]
-  int  envCount
-  UTF  env[i]
-  UTF  dir ("" = inherit)
-
-response:
-  byte type: 1=stdout, 2=stderr, 3=exit
-  int  length
-  byte[length] payload (exit payload = int code)
-```
-
-The server closes the connection only after the command finishes, so the client
-can expose normal streams and `waitFor()`.
-
-## Startup
-
-### Wireless (current path)
-
-1. Pair and connect as today.
-2. ShellSupervisorService runs:
-   `app_process -Djava.class.path=<apk> /system/bin com.shark.kty.shell.ShellServer <socket>`
-   through the existing ADB shell backend, with `setsid`, stdin `/dev/null`,
-   output to a log file.
-3. App connects to the abstract socket.
-
-### Wired (later)
-
-PC runs the same `adb shell app_process ...` command; the app then connects to
-the socket. No separate protocol is needed.
-
-## Security
-
-- Abstract socket name contains a random suffix.
-- Server checks the connecting peer UID (`LocalSocket.getPeerCredentials()`)
-  and only accepts the app UID.
-- A random token is still exchanged in the first frame as defence in depth.
-- No TCP port is opened.
+5. App side
+   - Touch `binder-request` on startup / when reconnecting
+   - `PrivService.pick()` already prefers Stellar, then Shizuku: once the server
+     binder arrives, the SHIZUKU path is used with no code change
 
 ## Milestones
 
-1. ShellServer with a single `exec` and one-client accept; manual `app_process`
-   start via `adb shell`.
-2. App starts the server through the wireless ADB backend and runs `id`.
-3. `PrivService` backend `SHELL_SERVER`; root flow works end to end.
-4. Supervisor keepalive and restart.
-5. Short-disconnect reconnection (before reboot auto-reconnect).
-6. Wired activation instructions using the same server.
+1. `ShellBinder` + `RemoteProcessImpl` compile; run `ShellServer` manually with
+   `adb shell app_process`; verify `Shizuku.pingBinder()` becomes true.
+2. Run `id` and `getenforce` through `PrivService`.
+3. Run the exploit through the persistent server.
+4. `ShellSupervisorService` starts/restarts the server through wireless ADB.
+5. App startup touches the request file and reconnects.
+6. Wired activation: PC runs the same `app_process` command.
+
+## Security
+
+- Binder delivery goes through our own `ShizukuProvider` authority.
+- The app already limits the provider with `INTERACT_ACROSS_USERS_FULL`.
+- `ShellBinder` should verify the caller UID (`Binder.getCallingUid()`) equals
+  the app UID before `newProcess`; everything else returns defaults.
+- No network port is opened.
 
 ## Risks
 
-- SELinux may block abstract sockets or `app_process` from the shell domain
-- Background/foreground service restrictions on Android 17
-- Process lifetime: the shell process must not be killed by the ADB session end
-- Security: a wrong peer check would expose a root-adjacent shell
-- Debugging without a release: use debug APKs and logcat tags only
+- `app_process` + hidden API use (`ActivityThread` / ContentProvider call) may
+  differ across Android versions
+- Shell process lifetime: must survive the ADB shell that started it (`setsid`,
+  redirect stdio)
+- Background service restrictions on Android 17
+- `ShizukuProvider` accepts `sendBinder` from arbitrary callers unless guarded;
+  verify caller UID where possible
+- Testing only through debug APKs and logcat tags; no public release
 
 ## Test plan
 
-- Start server manually with `adb shell app_process ...`; verify socket connect
-- Run `id`, `getenforce`, then the real exploit binary from the server
-- Verify exit codes, env, cwd, stdout/stderr streaming
-- Kill the server; verify supervisor restart
-- Run the full wireless pairing -> root flow
-- Only after all pass, consider merging back to a release branch
+- Manual `app_process` start; `adb logcat -s SharkShell`
+- `Shizuku.pingBinder()` and `PrivService.pick()` report SHIZUKU
+- `PrivService.newProcess(arrayOf("id"), …)` returns uid 2000
+- Exploit root flow end to end
+- Kill server; supervisor restarts it; app reconnects through the request file
+- Wireless pairing first, then repeat with wired ADB
