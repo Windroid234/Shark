@@ -133,3 +133,25 @@ No custom socket and no new private protocol are needed.
 - Exploit root flow end to end
 - Kill server; supervisor restarts it; app reconnects through the request file
 - Wireless pairing first, then repeat with wired ADB
+
+## Progress (experimental branch)
+
+- M1 done: `ShellServer` runs as uid 2000 through `libstarter.so`; the binder is
+  delivered to `ShizukuProvider`.
+- M2 done: `ShellServer` + `ShellBinder` + `RemoteProcessImpl` execute commands
+  (`id`, env, cwd, streams, exit codes).
+- M3 done: the app uses the binder through the existing `PrivService.SHIZUKU`
+  path; the full root flow succeeded on the OnePlus 15 (`exploit exit=0`).
+- M4 partial: `ShellSupervisorService` runs as a `specialUse` foreground
+  service and keeps the binder watched, but automatic restart still needs a
+  connected wireless ADB backend.
+
+### Fixes found during bring-up
+
+- `attachApplication` must call back `IShizukuApplication.bindApplication(...)`
+  for Shizuku v13; otherwise listeners never fire and the UI stays "not
+  authorized".
+- Binder re-delivery must retry until it actually succeeds; otherwise a request
+  file touched while the app process is restarting is consumed and lost.
+- The supervisor needs `android.permission.WAKE_LOCK` (runtime
+  `SecurityException` otherwise).
