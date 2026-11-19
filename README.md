@@ -78,6 +78,8 @@ SukiSU Ultra, or FinaSU root environment.
 | Realme Neo8 (RMX8899) | ColorOS 16/17 | `6.12.38-android16-5-g844001fb8721-ab14552068-4k`<br>`6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
 | Xiaomi 18 Pro (M610BB) | HyperOS 4 / Android 17 | `6.18.21-android17-5-g1d099fcb35e0-abogki540753930-4k` |
 | Xiaomi 18 Fold (lhasa) | HyperOS 4 / Android 17 | `6.18.21-android17-5-g805aa6adea19-abogki576585092-4k` |
+| Xiaomi Pad 7S Pro (violin) | HyperOS 4 / Android 17 | `6.18.21-android17-5-g284297031c53-abogki553682993-4k` |
+| Xiaomi Pad 9 Pro Max (yingtian) | HyperOS 4 / Android 17 | `6.18.21-android17-5-g805aa6adea19-abogki565292102-4k` |
 
 ## Supported managers
 
@@ -324,6 +326,9 @@ installed alongside this one, but settings and history are not migrated.
 | `2.5-en.10` | 2.5 | ftrace restore no longer blocks the flow on a manager root prompt (3 s timeout) |
 | `2.5-en.11` | 2.5 | Stop reading as soon as the exploit exit marker arrives and add a 180 s watchdog, so a failed plant that parks a holder cannot hang the app |
 | `2.5-en.12` | 2.5 | Manual: retry/reboot guidance for `FAIL=fake-cred` and repeated `EXIT=13` failures |
+| `2.5-en.13` | 2.5 | Wireless backend now passes the environment and working directory, fixing `env missing ksud` on vivo/iQOO late-load |
+| `2.5-en.14` | 2.5 | Manual: `FAIL=selinux` retry-versus-reboot guidance |
+| `2.5.1-en.1` | 2.5.1 | Aligned with upstream 2.5.1: removed all vivo/iQOO support; added Xiaomi Xuanjie O1 (Pad 7S Pro) and O3 (Pad 9 Pro Max) 6.18.21 profiles |
 
 Each release stamps its own `2.5-en.N` version and is signed with the fork's
 release key. Every release ships the signed APK together with its SHA-256 file.

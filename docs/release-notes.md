@@ -21,6 +21,8 @@ one of the versions below **exactly**; anything else is rejected.
 - OnePlus 16 (PYB110)
 - Xiaomi 18 Pro (M610BB)
 - Xiaomi 18 Fold (lhasa) — experimental, offsets taken from upstream and not verified against the matching firmware
+- Xiaomi Pad 7S Pro (violin) — experimental, offsets taken from upstream 2.5.1
+- Xiaomi Pad 9 Pro Max (yingtian) — experimental, offsets taken from upstream 2.5.1
 
 ### 6.12.69 (Android 16)
 - OnePlus 15 (PLK110), OnePlus 15T (PLZ110)

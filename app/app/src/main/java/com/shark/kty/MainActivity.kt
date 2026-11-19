@@ -2669,8 +2669,12 @@ class MainActivity : ComponentActivity() {
                         when (kernelVersion) {
                             "6.18.21-android17-5-g284297031c53-abogki555938958-4k" ->
                                 "$nativeDir/libk61821p.so"
+                            "6.18.21-android17-5-g284297031c53-abogki553682993-4k" ->
+                                "$nativeDir/libk61821p553.so"
                             "6.18.21-android17-5-g805aa6adea19-abogki576585092-4k" ->
                                 "$nativeDir/libk61821g805.so"
+                            "6.18.21-android17-5-g805aa6adea19-abogki565292102-4k" ->
+                                "$nativeDir/libk61821g805b.so"
                             else -> "$nativeDir/libk61821.so"
                         },
                         "run"
@@ -2885,8 +2889,10 @@ class MainActivity : ComponentActivity() {
             "6.18.21-android17-5-gf957accaf563-ab15926176-4k" to ExploitKind.CVE61821,
             "6.18.21-android17-5-g7fcbffcad3e1-ab16353812-4k" to ExploitKind.CVE61821,
             "6.18.21-android17-5-g284297031c53-abogki555938958-4k" to ExploitKind.CVE61821,
+            "6.18.21-android17-5-g284297031c53-abogki553682993-4k" to ExploitKind.CVE61821,
             "6.18.21-android17-5-g1d099fcb35e0-abogki540753930-4k" to ExploitKind.CVE61821,
             "6.18.21-android17-5-g805aa6adea19-abogki576585092-4k" to ExploitKind.CVE61821,
+            "6.18.21-android17-5-g805aa6adea19-abogki565292102-4k" to ExploitKind.CVE61821,
             "6.12.69-android16-6-g242e1a07f878-ab15865446-4k" to ExploitKind.CVE61269,
             "6.12.69-android16-6-g5fd39602326e-ab16372235-4k" to ExploitKind.CVE61269,
             "6.12.69-android16-6-g586bfab1b9c5-abogki536749445-4k" to ExploitKind.CVE61269,
