@@ -300,12 +300,10 @@ installed alongside this one, but settings and history are not migrated.
 
 - Only the **latest `en.N` of each version line** keeps downloadable assets
   (`2.5-en.14`, `2.4.1-en.3`, `2.3.2-en.1`, `2.2.3-en.1`, `2.2.1-en.1`, `2.1-en.4`).
-- Superseded but working builds keep their release page as a notice with the
-  APK removed, so an old link points to
+- Superseded, broken or intermediate builds keep a notice page as a
+  **pre-release** with the APK removed, so their old links still lead to
   https://github.com/kpgc10kai/Shark/releases/latest
-- Broken, intermediate or in-progress builds are drafts: they are not visible
-  and cannot be downloaded.
-- Always download from https://github.com/kpgc10kai/Shark/releases/latest
+- Only the latest build of each line carries downloadable assets.
 
 ### Update history
 

@@ -49,5 +49,5 @@ The complete kernel-version table is in the
 
 ## Release policy
 
-Only the latest build of each version line keeps downloadable assets. Superseded pages keep a notice and point to the latest release. Broken or intermediate builds are drafts and are not visible.
+Only the latest build of each version line keeps downloadable assets. Superseded, broken or intermediate builds keep a notice page as a pre-release with the APK removed, so old links point to https://github.com/kpgc10kai/Shark/releases/latest.
 
