@@ -321,11 +321,13 @@ class MainActivity : ComponentActivity() {
         binderReady = PrivService.pick() != null
         refreshAuth()
         refreshKsuAsync()
+        if (binderReady) ShellSupervisorService.start(this)
     }
     private val stellarBinderListener = Stellar.OnBinderReceivedListener {
         binderReady = PrivService.pick() != null
         refreshAuth()
         refreshKsuAsync()
+        if (binderReady) ShellSupervisorService.start(this)
     }
 
     private fun onPermissionResult(ok: Boolean) {
