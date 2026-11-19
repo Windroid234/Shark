@@ -37,11 +37,14 @@ public final class ShellServer {
                 try {
                     long current = request.lastModified();
                     if (request.exists() && current != lastModified) {
+                        boolean delivered = false;
                         try {
-                            BinderDelivery.send(binder, PACKAGE);
+                            delivered = BinderDelivery.send(binder, PACKAGE);
                         } catch (Throwable ignored) {
                         }
-                        lastModified = current;
+                        if (delivered) {
+                            lastModified = current;
+                        }
                     }
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
