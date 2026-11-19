@@ -460,6 +460,7 @@ class MainActivity : ComponentActivity() {
             addLog("Auto root on boot: starting")
         }
         StellarSettings.init(this)
+        requestShellBinder()
         val adbPairingPort = intent?.getIntExtra("adb_pairing_port", -1) ?: -1
         if (adbPairingPort > 0) {
             lifecycleScope.launch(Dispatchers.IO) {
@@ -2378,6 +2379,21 @@ class MainActivity : ComponentActivity() {
         antiRootGuard = value
         getSharedPreferences("pyb110", MODE_PRIVATE).edit().putBoolean("antiroot_guard", value).apply()
         addLog("Anti-root guard: ${if (value) "on (stop riskdetect HAL; restored on reboot)" else "off"}")
+    }
+
+    private fun requestShellBinder() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val dir = getExternalFilesDir(null) ?: filesDir
+            val result = runCatching {
+                File(dir, "binder-request").writeText(System.currentTimeMillis().toString())
+            }
+            withContext(Dispatchers.Main) {
+                addLog(
+                    if (result.isSuccess) "Requested shell binder"
+                    else "Shell binder request failed: ${result.exceptionOrNull()?.message}"
+                )
+            }
+        }
     }
 
     private fun startWirelessAdbPairing() {
