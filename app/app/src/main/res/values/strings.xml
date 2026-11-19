@@ -151,4 +151,9 @@
     <string name="pairing_in_progress">Pairing…</string>
     <string name="search_stopped">Search stopped</string>
     <string name="pairing_service_not_found_retry">Pairing service not found. Retry?</string>
-</resources>
+    <!-- Shell supervisor -->
+    <string name="shell_channel_name">Shell service</string>
+    <string name="shell_channel_desc">Keeps the privileged shell running</string>
+    <string name="shell_notification_title">Shark Shell</string>
+    <string name="shell_notification_connecting">Connecting to the privileged shell…</string>
+    <string name="shell_notification_running">Privileged shell is running</string></resources>

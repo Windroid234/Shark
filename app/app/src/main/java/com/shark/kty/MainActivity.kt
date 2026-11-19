@@ -461,6 +461,9 @@ class MainActivity : ComponentActivity() {
         }
         StellarSettings.init(this)
         requestShellBinder()
+        if (WirelessAdb.connected || PrivService.pick() != null) {
+            ShellSupervisorService.start(this)
+        }
         val adbPairingPort = intent?.getIntExtra("adb_pairing_port", -1) ?: -1
         if (adbPairingPort > 0) {
             lifecycleScope.launch(Dispatchers.IO) {
