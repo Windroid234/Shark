@@ -296,6 +296,17 @@ installed alongside this one, but settings and history are not migrated.
   from the last synced source (v2.3.2, upstream versionCode 98) and tracks the
   upstream releases page.
 
+### Release policy
+
+- Only the **latest `en.N` of each version line** keeps downloadable assets
+  (`2.5-en.14`, `2.4.1-en.3`, `2.3.2-en.1`, `2.2.3-en.1`, `2.2.1-en.1`, `2.1-en.4`).
+- Superseded but working builds keep their release page as a notice with the
+  APK removed, so an old link points to
+  https://github.com/kpgc10kai/Shark/releases/latest
+- Broken, intermediate or in-progress builds are drafts: they are not visible
+  and cannot be downloaded.
+- Always download from https://github.com/kpgc10kai/Shark/releases/latest
+
 ### Update history
 
 | Fork release | Upstream | Changes |

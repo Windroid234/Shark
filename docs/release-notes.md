@@ -46,3 +46,8 @@ one of the versions below **exactly**; anything else is rejected.
 
 The complete kernel-version table is in the
 [README](https://github.com/kpgc10kai/Shark#supported-devices).
+
+## Release policy
+
+Only the latest build of each version line keeps downloadable assets. Superseded pages keep a notice and point to the latest release. Broken or intermediate builds are drafts and are not visible.
+
