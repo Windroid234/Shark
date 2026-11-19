@@ -107,6 +107,20 @@ public final class ShellBinder extends IShizukuService.Stub {
 
     @Override
     public void attachApplication(IShizukuApplication application, Bundle options) {
+        if (application == null) {
+            return;
+        }
+        Bundle reply = new Bundle();
+        reply.putInt("shizuku:attach-reply-uid", Process.myUid());
+        reply.putInt("shizuku:attach-reply-version", SERVER_VERSION);
+        reply.putInt("shizuku:attach-reply-patch-version", 0);
+        reply.putString("shizuku:attach-reply-secontext", getSELinuxContext());
+        reply.putBoolean("shizuku:attach-reply-permission-granted", true);
+        reply.putBoolean("shizuku:attach-reply-should-show-request-permission-rationale", false);
+        try {
+            application.bindApplication(reply);
+        } catch (Throwable ignored) {
+        }
     }
 
     @Override
