@@ -195,16 +195,27 @@ object UpdateChecker {
             ?.groupValues
             ?.getOrNull(1)
 
-    private fun parseVersion(version: String): List<Int> =
-        Regex("\\d+").findAll(version).map { it.value.toInt() }.take(4).toList()
+    /**
+     * Fork versions look like `2.5-en.14` or `2.5.1-en.1`. Comparing the raw
+     * numbers turns `2.5-en.14` into 2.5.14, which would look newer than
+     * 2.5.1. Compare the upstream base version first, then the en revision.
+     */
+    private fun parseVersion(version: String): ForkVersion {
+        val base = version.substringBefore("-en", version).trim()
+        val baseParts = Regex("\\d+").findAll(base).map { it.value.toInt() }.take(4).toList()
+        val en = Regex("-en\\.(\\d+)").find(version)?.groupValues?.get(1)?.toIntOrNull() ?: 0
+        return ForkVersion(baseParts, en)
+    }
 
-    private fun compareVersion(a: List<Int>, b: List<Int>): Int {
-        val size = maxOf(a.size, b.size)
+    private fun compareVersion(a: ForkVersion, b: ForkVersion): Int {
+        val size = maxOf(a.base.size, b.base.size)
         for (i in 0 until size) {
-            val left = a.getOrElse(i) { 0 }
-            val right = b.getOrElse(i) { 0 }
+            val left = a.base.getOrElse(i) { 0 }
+            val right = b.base.getOrElse(i) { 0 }
             if (left != right) return left.compareTo(right)
         }
-        return 0
+        return a.en.compareTo(b.en)
     }
+
+    private data class ForkVersion(val base: List<Int>, val en: Int)
 }
