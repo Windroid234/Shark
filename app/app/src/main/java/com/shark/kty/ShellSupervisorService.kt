@@ -95,14 +95,14 @@ class ShellSupervisorService : Service() {
                     requestBinder()
                     startServerIfPossible()
                 }
-            } catch (InterruptedException) {
+            } catch (e: InterruptedException) {
                 return
-            } catch (Throwable t) {
+            } catch (t: Throwable) {
                 Log.w(TAG, "supervisor loop: $t")
             }
             try {
                 Thread.sleep(LOOP_DELAY_MS)
-            } catch (InterruptedException) {
+            } catch (e: InterruptedException) {
                 return
             }
         }
