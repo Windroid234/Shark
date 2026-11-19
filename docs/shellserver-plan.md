@@ -25,6 +25,34 @@ Our app already declares `rikka.shizuku.ShizukuProvider`
 (`${applicationId}.shizuku`, V3 support) and depends on the Shizuku API/AIDL, so
 the existing `PrivService.SHIZUKU` path can consume this binder unchanged.
 
+## Verified details (second pass)
+
+- `ShellServer.main()` does: `Looper.prepareMainLooper()`, creates `ShellBinder`,
+  calls `BinderDelivery.send(binder, "com.shark.kty")`, starts `watchRequests()`,
+  then `Looper.loop()`.
+- `BinderDelivery.send`:
+  - authority = `<package>.shizuku`
+  - `ActivityManagerApis.getContentProviderExternal(authority, 0, null, authority)`
+  - `IContentProvider.call(..., "sendBinder", null, bundle)`
+  - extra: `moe.shizuku.privileged.api.intent.extra.BINDER` holding a
+    `moe.shizuku.api.BinderContainer` (not a raw IBinder)
+  - retries up to 30 times, 300 ms apart
+- `ShellServer.watchRequests` polls
+  `/sdcard/Android/data/com.shark.kty/files/binder-request` and re-sends the
+  binder when its mtime changes.
+- App side writes `getExternalFilesDir(null)/binder-request` with the current
+  time in millis (fallback: `getFilesDir()`).
+- `ShellBinder` does **not** check the caller UID; it returns
+  `Process.myUid()` for `getUid()` and version 13 for `getVersion()`.
+- `RemoteProcessImpl.start` uses `ProcessBuilder` + `ParcelFileDescriptor`
+  pipes; `newProcess` simply forwards to it.
+- The starter is the bundled **`libstarter.so`**: it runs
+  `pm path com.shark.kty`, sets `CLASSPATH`, and executes
+  `app_process ... com.shark.kty.shell.ShellServer` via `setsid`, with stdio
+  redirected.
+- Our APK already ships `libstarter.so` and declares the Shizuku provider, so
+  only the shell classes and supervisor are missing.
+
 ## Architecture
 
 ```
