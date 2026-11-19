@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Process;
+import android.os.RemoteException;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -137,7 +138,8 @@ public final class ShellBinder extends IShizukuService.Stub {
     }
 
     @Override
-    public boolean onTransact(int code, Parcel data, Parcel reply, int flags) {
+    public boolean onTransact(int code, Parcel data, Parcel reply, int flags)
+            throws RemoteException {
         if (code == TRANSACTION_PROBE) {
             if (reply != null) {
                 reply.writeInt(PROBE_MAGIC);
