@@ -25,7 +25,7 @@ public final class ShellBinder extends IShizukuService.Stub {
 
     private static String readCommand(String command) {
         try {
-            Process process = Runtime.getRuntime().exec(command);
+            java.lang.Process process = Runtime.getRuntime().exec(command);
             StringBuilder builder = new StringBuilder();
             try (BufferedReader reader = new BufferedReader(
                     new InputStreamReader(process.getInputStream()))) {
