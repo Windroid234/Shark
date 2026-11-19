@@ -309,7 +309,7 @@ static struct kprobe kp_map_smap = {
 /* The outer half of the maps listing.  show_map() is what proc_pid_maps_op points at
  * (a proc_ops .proc_show field, i.e. a function pointer in data, which a build cannot
  * inline away), and it calls show_map_vma() for every line.  A vendor kernel is free to
- * inline that call - measured on a vivo 6.6.89: `show_map_vma` exists in /proc/kallsyms
+ * inline that call - measured on a vendor 6.6.89: `show_map_vma` exists in /proc/kallsyms
  * and the probe arms, but it never fires, so map_stat shows hides=0 while the listing
  * stays visible (susfs4ksu-lkm#102).  Probing show_map() instead catches the same vma at
  * the outer layer; and because a hit there returns straight to the caller, the inner

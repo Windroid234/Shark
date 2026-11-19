@@ -26,7 +26,7 @@
 > [Switching between the upstream and this fork](#switching-between-the-upstream-and-this-fork)
 > before installing.
 
-Shark supports OnePlus, OPPO, Realme, iQOO, and other devices, with no BL unlock
+Shark supports OnePlus, OPPO, Realme, and other devices, with no BL unlock
 required; all you need to begin is adb shell. Through Stellar or Shizuku, the app
 drives the on-device exploit, gains temporary kernel privileges, then loads the LKM
 for the selected manager, ultimately providing a KernelSU, KernelSU-Next, BakaSU,
@@ -76,7 +76,6 @@ SukiSU Ultra, or FinaSU root environment.
 | Realme GT8 (RMX6699) | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
 | OPPO K13 Turbo Pro (PLE110) | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
 | Realme Neo8 (RMX8899) | ColorOS 16/17 | `6.12.38-android16-5-g844001fb8721-ab14552068-4k`<br>`6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
-| vivo / iQOO devices | OriginOS 6/7 | `6.12.58-android16-6-g690108013dcc-abogki576129896-4k`<br>`6.12.58-android16-6-g0a092cc0037a-abogki521987229-4k`<br>`6.12.58-android16-6-gdd6fd5c98918-abogki543627742-4k`<br>`6.12.23-android16-5-g41f4cb1fa7c7-abogki465038634-4k`<br>`6.6.127-android15-8-gd489d4ad2a70-abogki567717946-4k` |
 | Xiaomi 18 Pro (M610BB) | HyperOS 4 / Android 17 | `6.18.21-android17-5-g1d099fcb35e0-abogki540753930-4k` |
 | Xiaomi 18 Fold (lhasa) | HyperOS 4 / Android 17 | `6.18.21-android17-5-g805aa6adea19-abogki576585092-4k` |
 
@@ -90,8 +89,8 @@ installed manager APK, so **install the manager you intend to use first**.
 ## What it can do
 
 - **One-tap temporary root**: After opening the app, no manual exploit selection is
-  needed; it uses `uname -r` to automatically match one of seven chains: 6.18.21 /
-  6.12.69 / 6.12.38 / 6.12.58 / 6.12.23 / 6.6.118 / 6.6.127. A single tap on “One-tap
+  needed; it uses `uname -r` to automatically match one of five chains: 6.18.21 /
+  6.12.69 / 6.12.38 / 6.12.58 / 6.6.118. A single tap on “One-tap
   Jailbreak” completes privilege escalation, `ksud late-load`, module installation,
   and manager launch. Temporary root disappears after a reboot; just run it again on
   the next boot.
@@ -111,7 +110,7 @@ installed manager APK, so **install the manager you intend to use first**.
   Switching synchronizes the version number, feature, private ioctl, and primary manager,
   and automatically reopens the target manager; no reboot or re-exploitation is
   required.
-- **Extras**: On 6.18, a VFS provider can be loaded; on 6.12 / V2505A, SUSFS can be
+- **Extras**: On 6.18, a VFS provider can be loaded; on 6.12, SUSFS can be
   loaded. Other toggles suppress anti-root dialogs, perform a soft reboot after
   jailbreaking, and unload kernel security protections. Enable them as needed; a
   failure in one item does not affect root that is already active.
@@ -176,9 +175,7 @@ Shark/
 │   │   ├── libk61269.so         6.12.69 runner
 │   │   ├── libk61238.so         6.12.38 runner
 │   │   ├── libk61258.so         6.12.58 runner
-│   │   ├── libk61223.so         6.12.23 runner
 │   │   ├── libk66118.so         6.6.118 runner
-│   │   ├── libk66127.so         6.6.127 runner
 │   │   ├── libksud_universal.so Dual-KMI universal loader
 │   │   ├── libsusfs_guard_lkm.so
 │   │   ├── libsusfs_guard_lkm_612.so
@@ -194,10 +191,8 @@ Shark/
 │   ├── hybridmount/             VFS provider source
 │   └── susfs-tools/             SUSFS rule tools
 ├── docs/screenshots/            README screenshots
-├── ports/v2505a/                V2505A notes and verification records
 ├── ports/coloros-61269/         6.12.69 dual-OTA build notes and recovery tools
 ├── ports/pkj110-66118/          PKJ110 6.6.118 notes and verification records
-├── ports/pd2454-66127/          vivo 6.6.127 notes and OTA extraction tools
 ├── third_party/                 Third-party licenses and materials
 ├── NOTICE / LICENSE
 └── README.md
@@ -210,8 +205,6 @@ Shark/
 - `exploit/`: Rust single-entry runner and C plant, responsible for privilege
   escalation, fake cred, `ksud late-load`, and cleanup.
 - `lkm/`: Source and build scripts for the SUSFS guard and Hybrid Mount VFS provider.
-- `ports/v2505a/`: Notes, constants, and verification records for the V2505A branch.
-- `ports/pd2454-66127/`: notes, constants and OTA extraction tools for the vivo 6.6.127 branch.
 - `third_party/`: Full third-party license texts and reference materials.
 
 **Tech stack**
@@ -246,7 +239,7 @@ cargo build --release --target aarch64-linux-android \
     --no-default-features --features k66118
 ```
 
-Available features: `k61269`, `k61238`, `k61258`, `k61223`, `k66118`;
+Available features: `k61269`, `k61238`, `k61258`, `k66118`;
 6.18.21 is built separately by `rust-k61821`.
 
 The universal KO and dual-KMI loader are built in

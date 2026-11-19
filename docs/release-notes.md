@@ -35,23 +35,14 @@ one of the versions below **exactly**; anything else is rejected.
 ### 6.12.58 / 6.12.38 (Android 16)
 - OnePlus Pad3 Pro (OPD2513), OPPO Pad Mini (OPD2515)
 - OnePlus Ace6T (PLR110), Realme Neo8 (RMX8899)
-- vivo / iQOO devices (6.12.58 builds)
 
-### 6.6.118 / 6.6.127 (Android 15)
+### 6.6.118 (Android 15)
 - OnePlus Ace6 (PLQ110), OnePlus Ace5 Pro (PKR110)
 - OnePlus Pad2 Pro (OPD2413)
 - OPPO Find X8 Ultra (PKJ110), OPPO Find N5 (PKH110)
 - OPPO Pad4 Pro (OPD2409)
 - Realme GT8 (RMX6699)
 - OPPO K13 Turbo Pro (PLE110)
-- vivo / iQOO devices (6.6.127 build)
-
-### vivo / iQOO builds
-- `6.12.58-android16-6-g690108013dcc-abogki576129896-4k`
-- `6.12.58-android16-6-g0a092cc0037a-abogki521987229-4k`
-- `6.12.58-android16-6-gdd6fd5c98918-abogki543627742-4k`
-- `6.12.23-android16-5-g41f4cb1fa7c7-abogki465038634-4k`
-- `6.6.127-android15-8-gd489d4ad2a70-abogki567717946-4k`
 
 The complete kernel-version table is in the
 [README](https://github.com/kpgc10kai/Shark#supported-devices).

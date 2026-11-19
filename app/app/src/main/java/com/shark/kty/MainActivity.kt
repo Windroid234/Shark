@@ -2559,7 +2559,6 @@ class MainActivity : ComponentActivity() {
         val marketName = when (Build.MANUFACTURER.orEmpty().lowercase()) {
             "xiaomi" -> getSystemProperty("ro.product.marketname")
             "oppo", "oneplus", "realme", "oplus" -> getSystemProperty("ro.vendor.oplus.market.name")
-            "vivo" -> getSystemProperty("ro.vivo.market.name")
             "honor", "huawei" -> getSystemProperty("ro.config.marketing_name")
             "zte", "nubia" -> getSystemProperty("ro.vendor.product.ztename")
             else -> ""
@@ -2679,9 +2678,7 @@ class MainActivity : ComponentActivity() {
                     ExploitKind.CVE61269 -> arrayOf("$nativeDir/libk61269.so", "run")
                     ExploitKind.CVE61238 -> arrayOf("$nativeDir/libk61238.so", "run")
                     ExploitKind.CVE61258 -> arrayOf("$nativeDir/libk61258.so", "run")
-                    ExploitKind.CVE61223 -> arrayOf("$nativeDir/libk61223.so", "run")
                     ExploitKind.CVE66118 -> arrayOf("$nativeDir/libk66118.so", "run")
-                    ExploitKind.CVE66127 -> arrayOf("$nativeDir/libk66127.so", "run")
                     ExploitKind.UNSUPPORTED -> null
                 } ?: run {
                     withContext(Dispatchers.Main) {
@@ -2842,9 +2839,7 @@ class MainActivity : ComponentActivity() {
         CVE61269("CVE-2026-98260-6.12.69"),
         CVE61238("CVE-2026-98260-6.12.38"),
         CVE61258("CVE-2026-98260-6.12.58"),
-        CVE61223("CVE-2026-98260-vivo-6.12.23"),
         CVE66118("CVE-2026-98260-6.6.118"),
-        CVE66127("CVE-2026-98260-vivo-6.6.127"),
         UNSUPPORTED("Unsupported device")
     }
 
@@ -2857,35 +2852,24 @@ class MainActivity : ComponentActivity() {
         DYNAMIC("Dynamic Switching", "me.weishu.kernelsu", "kernelsu")
     }
 
-    private fun isVivoV2505a(): Boolean =
-        (exploit == ExploitKind.CVE61223 || exploit == ExploitKind.CVE61258) &&
-            kernelVersion.contains("abogki")
-
     /** The OPPO anti-root actions are meaningless on the Xiaomi-port kernels. */
     private fun isXiaomiPortKernel(): Boolean =
         kernelVersion == "6.12.69-android16-6-g586bfab1b9c5-abogki536749445-4k" ||
             kernelVersion == "6.18.21-android17-5-g284297031c53-abogki555938958-4k"
 
-    private fun hidesOplusOnlyOptions(): Boolean =
-        isVivoV2505a() || isXiaomiPortKernel()
+    private fun hidesOplusOnlyOptions(): Boolean = isXiaomiPortKernel()
 
-    /** OriginOS 7 builds load the KSU LKM through the hooks_defend gate. */
-    private fun isGateKernel(): Boolean =
-        exploit == ExploitKind.CVE66127 ||
-            (exploit == ExploitKind.CVE61258 &&
-                (kernelVersion.contains("gdd6fd5c98918") ||
-                    kernelVersion.contains("g690108013dcc")))
+    /** No gate kernels remain. */
+    private fun isGateKernel(): Boolean = false
 
     private fun supportsUniversal(): Boolean =
         exploit == ExploitKind.CVE61821 ||
             exploit == ExploitKind.CVE61269 ||
             exploit == ExploitKind.CVE61238 ||
-            exploit == ExploitKind.CVE61258 ||
-            exploit == ExploitKind.CVE61223
+            exploit == ExploitKind.CVE61258
 
     private fun supportsSusfs(): Boolean =
         !isGateKernel() && exploit != ExploitKind.CVE66118 &&
-            exploit != ExploitKind.CVE66127 &&
             exploit != ExploitKind.UNSUPPORTED
 
     private fun managerChoices(): List<ManagerKind> =
@@ -2908,14 +2892,9 @@ class MainActivity : ComponentActivity() {
             "6.12.69-android16-6-g586bfab1b9c5-abogki536749445-4k" to ExploitKind.CVE61269,
             "6.12.38-android16-5-g844001fb8721-ab14552068-4k" to ExploitKind.CVE61238,
             "6.12.58-android16-6-g7704a1ae279b-ab15213644-4k" to ExploitKind.CVE61258,
-            "6.12.58-android16-6-g0a092cc0037a-abogki521987229-4k" to ExploitKind.CVE61258,
-            "6.12.58-android16-6-gdd6fd5c98918-abogki543627742-4k" to ExploitKind.CVE61258,
-            "6.12.23-android16-5-g41f4cb1fa7c7-abogki465038634-4k" to ExploitKind.CVE61223,
             "6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k" to ExploitKind.CVE66118,
             "6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k" to ExploitKind.CVE66118,
             "6.6.118-android15-8-gb1422e39c313-abogki552867473-4k" to ExploitKind.CVE66118,
-            "6.6.127-android15-8-gd489d4ad2a70-abogki567717946-4k" to ExploitKind.CVE66127,
-            "6.12.58-android16-6-g690108013dcc-abogki576129896-4k" to ExploitKind.CVE61258,
         )
     }
 }

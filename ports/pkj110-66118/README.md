@@ -1,11 +1,11 @@
 # OPPO PKJ110 (Find X8 Ultra) 6.6.118 CVE-2026-98260 Adaptation
 
 Same origin and same physical chain as `rust-kplant`, differing only in per-build constants.
-**The existing 6.12.69 / 6.18.21 / V2505A / 6.6.127 entries are left untouched**, and a new
+**The existing 6.12.69 / 6.18.21 entries are left untouched**, and a new
 `PKJ110_66118` compile-time branch plus a standalone `libk66118.so` are added.
 
 This is the **android15-6.6** KMI (6.6.118), not the android16-6/android16-5 of 6.12.
-It belongs to the same android15-8 GKI as 6.6.127, but the constants were recovered anew for this image.
+It belongs to the same android15-8 GKI as the other 6.6 builds, but the constants were recovered anew for this image.
 
 ## Status
 
@@ -57,14 +57,13 @@ DONE
   - release: `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k`
     (LLD 18.0.0, kleaf@build-host)
 
-## kallsyms Layout Notes (this image differs from 6.6.127)
+## kallsyms Layout Notes (this image differs from other 6.6 builds)
 
 `recover.py` encountered two differences while recovering this image, and both have been fixed in the tool:
 
 - `kallsyms_offsets` has a 0 sentinel at the end, so the monotonicity check was relaxed from `bad == 0` to `bad <= 4`
 - **the name table has one more header entry than the address table**: `names[i]` actually pairs with `offsets[i-1]` (shift = +1).
-  The shift is calibrated automatically from the self-consistency of `__ksymtab_*` PREL32 value/name (shift=+1 for this image;
-  a recheck of 6.6.127 gives shift=+0, with constants matching the original README)
+  The shift is calibrated automatically from the self-consistency of `__ksymtab_*` PREL32 value/name (shift=+1 for this image).
 
 ## Constants
 
@@ -87,13 +86,13 @@ DONE
 #define INIT_GROUPS_STATIC         0xffffffc082170c40ULL
 ```
 
-BTF (shipped with the image) matches 6.6.127: `k_itimer` 0x108, `cred` 0xb8,
+BTF (shipped with the image) matches the other 6.6 builds: `k_itimer` 0x108, `cred` 0xb8,
 `task_struct` 0x12c0 (`cred`@0x820), `selinux_state` 0x80, `tracepoint.funcs`@0x48.
 Data symbol self-check: `root_user.usage=1 / uid=0`, `panic_on_warn=0`.
 
 ## Load Path
 
-On the ColorOS side, the 6.6.127 `hooks_defend` gate is not used (no kread/whitelist step);
+On the ColorOS side, no `hooks_defend` gate is used (no kread/whitelist step);
 the generic `ksud late-load --kmi android15-6.6 --allow-shell --package-name <pkg>` is used instead;
 `finish_manager` continues to handle `oplus_secure_guard_new` and `riskdetect` with the OPPO recipe.
 
