@@ -2418,6 +2418,20 @@ class MainActivity : ComponentActivity() {
         if (missing.isNotEmpty()) {
             requestPermissions(missing.toTypedArray(), 1001)
         }
+        if (!isPairingAccessibilityEnabled()) {
+            addLog("Pairing helper is not enabled")
+            android.app.AlertDialog.Builder(this)
+                .setTitle(R.string.accessibility_prompt_title)
+                .setMessage(R.string.accessibility_prompt_message)
+                .setPositiveButton(R.string.accessibility_prompt_open) { _, _ ->
+                    runCatching {
+                        startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+                    }
+                }
+                .setNegativeButton(R.string.accessibility_prompt_skip, null)
+                .show()
+            return
+        }
         addLog("Wireless ADB pairing: searching for the pairing service…")
         startForegroundService(AdbPairingService.startIntent(this))
         runCatching {
@@ -2438,6 +2452,17 @@ class MainActivity : ComponentActivity() {
             pairingDialogPending = false
             showPairingCodeDialog()
         }
+    }
+
+    private fun isPairingAccessibilityEnabled(): Boolean {
+        val enabled = runCatching {
+            Settings.Secure.getString(
+                contentResolver,
+                Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
+            )
+        }.getOrNull() ?: return false
+        val target = "$packageName/com.shark.kty.PairingAccessibilityService"
+        return enabled.split(':').any { it.equals(target, ignoreCase = true) }
     }
 
     private fun showPairingCodeDialog() {

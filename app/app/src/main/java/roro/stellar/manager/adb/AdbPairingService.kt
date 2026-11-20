@@ -62,6 +62,9 @@ class AdbPairingService : Service() {
         @Volatile
         private var isRunning = false
 
+        @Volatile
+        var pairingActive = false
+
         fun startIntent(context: Context): Intent =
             Intent(context, AdbPairingService::class.java).setAction(startAction)
 
@@ -248,6 +251,7 @@ class AdbPairingService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         isRunning = false
+        pairingActive = false
         retryHandler.removeCallbacksAndMessages(null)
         stopSearch()
         adbMdns?.destroy()
@@ -258,6 +262,7 @@ class AdbPairingService : Service() {
 
     private fun onStart(): Notification {
         isRunning = true
+        pairingActive = true
         stopSearch()
         adbMdns?.destroy()
         adbMdns = null
@@ -580,6 +585,7 @@ class AdbPairingService : Service() {
 
         stopForeground(STOP_FOREGROUND_REMOVE)
         isRunning = false
+        pairingActive = false
         stopSelf()
     }
 

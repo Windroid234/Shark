@@ -161,4 +161,10 @@
     <string name="pairing_code_dialog_message">Keep the Wireless debugging pairing dialog open in Settings, then enter the 6-digit code here.</string>
     <string name="pairing_code_hint">6-digit code</string>
     <string name="pairing_code_pair">Pair</string>
-    <string name="pairing_code_cancel">Cancel</string></resources>
+    <string name="pairing_code_cancel">Cancel</string>    <!-- Accessibility pairing helper -->
+    <string name="accessibility_service_label">Shark pairing helper</string>
+    <string name="accessibility_service_description">Reads the six-digit pairing code from the Android wireless debugging dialog so you do not have to type it. Only the Settings app is observed.</string>
+    <string name="accessibility_prompt_title">Enable automatic pairing?</string>
+    <string name="accessibility_prompt_message">Shark can read the pairing code from Settings automatically. Enable the Shark pairing helper under Accessibility to skip typing the code.</string>
+    <string name="accessibility_prompt_open">Open settings</string>
+    <string name="accessibility_prompt_skip">Not now</string></resources>
