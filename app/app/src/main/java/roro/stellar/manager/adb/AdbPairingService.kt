@@ -342,7 +342,15 @@ class AdbPairingService : Service() {
         Log.i(tag, "pairing code submitted in app (${trimmed.length} digits)")
         val port = discoveredPort
         GlobalScope.launch(Dispatchers.IO) {
-            val ok = if (port > 0) pairOnPort(trimmed, port) else pairAcrossCandidates(trimmed)
+            var ok = false
+            if (port > 0) {
+                ok = pairOnPort(trimmed, port)
+                Log.i(tag, "in-app pair on discovered port $port: $ok")
+            }
+            if (!ok) {
+                Log.i(tag, "falling back to a local port scan")
+                ok = pairAcrossCandidates(trimmed)
+            }
             handleResult(ok)
         }
         return workingNotification
