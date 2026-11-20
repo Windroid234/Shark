@@ -112,16 +112,25 @@ class AdbPairingService : Service() {
         } catch (e: Exception) {
             Log.e(tag, "failed to update notification", e)
             getSystemService(NotificationManager::class.java).notify(notificationId, notification)
-
-            val alertNotification = Notification.Builder(this, alertNotificationChannel)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(getString(R.string.pairing_service_found))
-                .setContentText(getString(R.string.enter_pairing_code))
-                .addAction(replyNotificationAction(port))
-                .setAutoCancel(true)
-                .build()
-            getSystemService(NotificationManager::class.java).notify(alertNotificationId, alertNotification)
         }
+
+        // Separate high-importance notification so the system shows a heads-up
+        // with the code input, even when the foreground notification is
+        // minimized.
+        showPairingAlert(port)
+    }
+
+    private fun showPairingAlert(port: Int) {
+        val alertNotification = Notification.Builder(this, alertNotificationChannel)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentTitle(getString(R.string.pairing_service_found))
+            .setContentText(getString(R.string.enter_pairing_code))
+            .setContentIntent(contentIntent)
+            .addAction(replyNotificationAction(port))
+            .setAutoCancel(true)
+            .setVisibility(Notification.VISIBILITY_PUBLIC)
+            .build()
+        getSystemService(NotificationManager::class.java).notify(alertNotificationId, alertNotification)
     }
 
     private var started = false
