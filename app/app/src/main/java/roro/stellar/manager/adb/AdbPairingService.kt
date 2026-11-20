@@ -27,6 +27,12 @@ import com.shark.kty.R
 import roro.stellar.manager.StellarSettings
 import kotlin.getValue
 import androidx.core.content.edit
+import java.io.File
+import java.net.InetSocketAddress
+import java.net.Socket
+import java.util.Collections
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 @RequiresApi(Build.VERSION_CODES.R)
 class AdbPairingService : Service() {
@@ -282,8 +288,12 @@ class AdbPairingService : Service() {
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun onInput(code: String, port: Int): Notification {
-        if (port == -1) {
-            return createManualInputNotification(-1)
+        if (port <= 0) {
+            GlobalScope.launch(Dispatchers.IO) {
+                val ok = pairAcrossCandidates(code)
+                handleResult(ok)
+            }
+            return workingNotification
         }
 
         GlobalScope.launch(Dispatchers.IO) {
@@ -310,6 +320,63 @@ class AdbPairingService : Service() {
     }
 
     private var connectMdns: AdbMdns? = null
+
+    private fun pairAcrossCandidates(code: String): Boolean {
+        val key = runCatching {
+            AdbKey(PreferenceAdbKeyStore(StellarSettings.getPreferences()), "Stellar")
+        }.getOrNull() ?: return false
+        val candidates = candidatePorts()
+        Log.i(tag, "pairing candidates (${candidates.size}): $candidates")
+        for (port in candidates) {
+            val ok = runCatching {
+                AdbPairingClient("127.0.0.1", port, code, key).start()
+            }.getOrDefault(false)
+            Log.i(tag, "pair attempt on $port: $ok")
+            if (ok) return true
+        }
+        return false
+    }
+
+    /** Listening ports from /proc, preferring the ephemeral range used by adbd. */
+    private fun candidatePorts(): List<Int> {
+        val ports = LinkedHashSet<Int>()
+        listOf("/proc/net/tcp", "/proc/net/tcp6").forEach { path ->
+            runCatching {
+                File(path).useLines { lines ->
+                    lines.drop(1).forEach { line ->
+                        val parts = line.trim().split(Regex("\\s+"))
+                        if (parts.size > 3 && parts[3] == "0A") {
+                            val port = parts[1].substringAfterLast(':')
+                                .toIntOrNull(16) ?: return@forEach
+                            if (port in 1024..65535) ports.add(port)
+                        }
+                    }
+                }
+            }
+        }
+        val preferred = ports.filter { it in 30000..50100 }
+        if (preferred.isNotEmpty()) return preferred.sorted()
+        if (ports.isNotEmpty()) return ports.sorted()
+        return scanOpenPorts()
+    }
+
+    private fun scanOpenPorts(): List<Int> {
+        val found = Collections.synchronizedList(mutableListOf<Int>())
+        val pool = Executors.newFixedThreadPool(128)
+        for (port in 30000..50000) {
+            pool.execute {
+                runCatching {
+                    Socket().use { socket ->
+                        socket.connect(InetSocketAddress("127.0.0.1", port), 20)
+                        found.add(port)
+                    }
+                }
+            }
+        }
+        pool.shutdown()
+        runCatching { pool.awaitTermination(30, TimeUnit.SECONDS) }
+        return found.sorted()
+    }
 
     private fun handleResult(success: Boolean) {
         retryHandler.post {
@@ -603,6 +670,7 @@ class AdbPairingService : Service() {
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(getString(R.string.searching_pairing_service))
             .setContentIntent(contentIntent)
+            .addAction(replyNotificationAction(-1))
             .addAction(stopNotificationAction)
             .addAction(stopAndRetryNotificationAction)
             .build()
