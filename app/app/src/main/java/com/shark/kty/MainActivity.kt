@@ -293,6 +293,7 @@ class MainActivity : ComponentActivity() {
     private var historyDetailText by mutableStateOf("")
     private var pendingUpdate by mutableStateOf<UpdateInfo?>(null)
     private var updateDialogVisible by mutableStateOf(false)
+    private var pairingDialogPending = false
     private var updateDownloading by mutableStateOf(false)
     private var updateProgress by mutableStateOf(0f)
     private var updateError by mutableStateOf<String?>(null)
@@ -2427,7 +2428,15 @@ class MainActivity : ComponentActivity() {
                 }
             )
         }
-        showPairingCodeDialog()
+        pairingDialogPending = true
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (pairingDialogPending) {
+            pairingDialogPending = false
+            showPairingCodeDialog()
+        }
     }
 
     private fun showPairingCodeDialog() {
