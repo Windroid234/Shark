@@ -246,8 +246,8 @@ class AdbPairingService : Service() {
         discoveredPort = -1
         retryAttempts = 0
         retryHandler.removeCallbacks(retryRunnable)
-        startSearch()
-        retryHandler.postDelayed(retryRunnable, 6000)
+        // Let the previous discovery finish stopping before registering again.
+        retryHandler.postDelayed({ startSearch() }, 700)
         return searchingNotification
     }
 
