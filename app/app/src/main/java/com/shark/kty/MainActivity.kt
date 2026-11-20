@@ -2427,6 +2427,35 @@ class MainActivity : ComponentActivity() {
                 }
             )
         }
+        showPairingCodeDialog()
+    }
+
+    private fun showPairingCodeDialog() {
+        val input = android.widget.EditText(this).apply {
+            inputType = android.text.InputType.TYPE_CLASS_NUMBER
+            hint = getString(R.string.pairing_code_hint)
+            setSingleLine()
+        }
+        val padding = (16 * resources.displayMetrics.density).toInt()
+        val container = android.widget.FrameLayout(this).apply {
+            setPadding(padding, padding / 2, padding, 0)
+            addView(input)
+        }
+        android.app.AlertDialog.Builder(this)
+            .setTitle(R.string.pairing_code_dialog_title)
+            .setMessage(R.string.pairing_code_dialog_message)
+            .setView(container)
+            .setPositiveButton(R.string.pairing_code_pair) { _, _ ->
+                val code = input.text.toString().trim()
+                if (code.isEmpty()) {
+                    addLog("Pairing code is empty")
+                    return@setPositiveButton
+                }
+                startForegroundService(AdbPairingService.pairIntent(this, code))
+                addLog("Pairing code submitted in app")
+            }
+            .setNegativeButton(R.string.pairing_code_cancel, null)
+            .show()
     }
 
     private fun updateAutoRootOnBoot(value: Boolean) {

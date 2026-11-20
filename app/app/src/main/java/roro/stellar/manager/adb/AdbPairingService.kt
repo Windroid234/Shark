@@ -54,14 +54,22 @@ class AdbPairingService : Service() {
         private const val stopAction = "stop"
         private const val stopAndRetryAction = "stop_and_retry"
         private const val replyAction = "reply"
+        private const val pairAction = "pair_in_app"
         private const val remoteInputResultKey = "paring_code"
         private const val portKey = "paring_code"
+        private const val inAppCodeKey = "in_app_pairing_code"
 
         @Volatile
         private var isRunning = false
 
         fun startIntent(context: Context): Intent =
             Intent(context, AdbPairingService::class.java).setAction(startAction)
+
+        /** Pair with a code entered inside the app instead of the notification. */
+        fun pairIntent(context: Context, code: String): Intent =
+            Intent(context, AdbPairingService::class.java)
+                .setAction(pairAction)
+                .putExtra(inAppCodeKey, code)
 
         private fun stopIntent(context: Context): Intent =
             Intent(context, AdbPairingService::class.java).setAction(stopAction)
@@ -187,6 +195,10 @@ class AdbPairingService : Service() {
             }
             stopAndRetryAction -> {
                 onStopAndRetry()
+            }
+            pairAction -> {
+                val code = intent.getStringExtra(inAppCodeKey) ?: ""
+                onPairCommand(code)
             }
             else -> {
                 return START_NOT_STICKY
@@ -321,16 +333,35 @@ class AdbPairingService : Service() {
 
     private var connectMdns: AdbMdns? = null
 
-    private fun pairAcrossCandidates(code: String): Boolean {
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun onPairCommand(code: String): Notification {
+        val trimmed = code.trim()
+        if (trimmed.isEmpty()) {
+            return searchingNotification
+        }
+        Log.i(tag, "pairing code submitted in app (${trimmed.length} digits)")
+        val port = discoveredPort
+        GlobalScope.launch(Dispatchers.IO) {
+            val ok = if (port > 0) pairOnPort(trimmed, port) else pairAcrossCandidates(trimmed)
+            handleResult(ok)
+        }
+        return workingNotification
+    }
+
+    private fun pairOnPort(code: String, port: Int): Boolean {
         val key = runCatching {
             AdbKey(PreferenceAdbKeyStore(StellarSettings.getPreferences()), "Stellar")
         }.getOrNull() ?: return false
+        return runCatching {
+            AdbPairingClient("127.0.0.1", port, code, key).start()
+        }.getOrDefault(false)
+    }
+
+    private fun pairAcrossCandidates(code: String): Boolean {
         val candidates = candidatePorts()
         Log.i(tag, "pairing candidates (${candidates.size}): $candidates")
         for (port in candidates) {
-            val ok = runCatching {
-                AdbPairingClient("127.0.0.1", port, code, key).start()
-            }.getOrDefault(false)
+            val ok = pairOnPort(code, port)
             Log.i(tag, "pair attempt on $port: $ok")
             if (ok) return true
         }

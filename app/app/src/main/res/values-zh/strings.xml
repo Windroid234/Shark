@@ -131,4 +131,9 @@
     <string name="shell_channel_desc">保持特权 Shell 运行</string>
     <string name="shell_notification_title">Shark Shell</string>
     <string name="shell_notification_connecting">正在连接特权服务…</string>
-    <string name="shell_notification_running">特权 Shell 正在运行</string></resources>
+    <string name="shell_notification_running">特权 Shell 正在运行</string>    <!-- In-app pairing code -->
+    <string name="pairing_code_dialog_title">输入配对码</string>
+    <string name="pairing_code_dialog_message">请保持设置中的无线调试配对对话框打开，然后在此输入 6 位配对码。</string>
+    <string name="pairing_code_hint">6 位配对码</string>
+    <string name="pairing_code_pair">配对</string>
+    <string name="pairing_code_cancel">取消</string></resources>

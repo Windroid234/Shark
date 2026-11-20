@@ -156,4 +156,9 @@
     <string name="shell_channel_desc">Keeps the privileged shell running</string>
     <string name="shell_notification_title">Shark Shell</string>
     <string name="shell_notification_connecting">Connecting to the privileged shell…</string>
-    <string name="shell_notification_running">Privileged shell is running</string></resources>
+    <string name="shell_notification_running">Privileged shell is running</string>    <!-- In-app pairing code -->
+    <string name="pairing_code_dialog_title">Enter pairing code</string>
+    <string name="pairing_code_dialog_message">Keep the Wireless debugging pairing dialog open in Settings, then enter the 6-digit code here.</string>
+    <string name="pairing_code_hint">6-digit code</string>
+    <string name="pairing_code_pair">Pair</string>
+    <string name="pairing_code_cancel">Cancel</string></resources>
