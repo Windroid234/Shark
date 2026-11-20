@@ -339,6 +339,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
+        if (BuildConfig.VERSION_NAME.contains("exp", ignoreCase = true)) return
         if (updateCheckedThisForeground) return
         updateCheckedThisForeground = true
         if (updateDialogVisible || updateDownloading) return
