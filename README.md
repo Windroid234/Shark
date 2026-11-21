@@ -96,6 +96,11 @@ installed manager APK, so **install the manager you intend to use first**.
   Jailbreak” completes privilege escalation, `ksud late-load`, module installation,
   and manager launch. Temporary root disappears after a reboot; just run it again on
   the next boot.
+- **Wireless ADB pairing, no PC**: Pair over Android's Wireless debugging and run
+  the root flow on the loopback ADB connection. With the optional accessibility
+  helper enabled, Shark reads the six-digit pairing code from Settings and
+  submits it automatically; otherwise the code can be entered from the pairing
+  notification.
 - **Auto root on boot**: When enabled, the one-tap flow runs after boot and the
   result is shown in the log. The app asks for the "Display over other apps"
   permission so it can start from the background; allow Shark to auto-start in
@@ -159,6 +164,21 @@ happen on a clean boot with no KSU loaded; hot replacement is not possible once
 5. Tap “One-tap Jailbreak” and wait for `DONE` to appear in the logs.
 6. In normal mode, open the manager and grant root; with Dynamic Switching, select
    the target manager in Extras, and the app switches to it and opens it automatically.
+
+### Wireless ADB pairing
+
+1. Enable **Wireless debugging** in Developer options.
+2. Tap **Wireless ADB** in Shark. If the accessibility prompt appears, open
+   Settings and enable **Shark pairing helper**.
+3. In Settings, tap **Pair device with pairing code** and keep the dialog open.
+4. The helper reads the six-digit code and submits it automatically. If the helper
+   is off or the code cannot be read, expand the **Pairing service found**
+   notification and enter the code there.
+5. Wait for Shark to return and show **Wireless ADB authorized**. Pairing
+   notifications are cleared on success.
+
+The helper only observes `com.android.settings`; it does not read other apps or
+open a network port.
 
 ## Project structure
 

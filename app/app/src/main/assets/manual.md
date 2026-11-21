@@ -13,6 +13,18 @@ Shark drives the on-device 98260 exploit as shell through Stellar or Shizuku to 
 5. If the log shows **MODULE NOT LOADED**, there is no need to reboot the device — just try the jailbreak again.
 6. Every time you enter the app it checks for updates automatically: Gitee Releases first, GitHub as fallback; when a new version is found a dialog appears, and you can download it directly and hand it to the system installer. You can also tap "Check for updates" manually on the "About" page.
 
+## Wireless ADB Pairing (no PC)
+
+Shark can use Android's Wireless debugging as the privileged backend, so no PC, Stellar, or Shizuku is required after pairing.
+
+1. Make sure **Wireless debugging** is enabled in Developer options.
+2. In Shark, tap **Wireless ADB**. If prompted, enable the **Shark pairing helper** under Accessibility.
+3. In Settings, tap **Pair device with pairing code** and leave the pairing dialog visible.
+4. With the pairing helper enabled, Shark reads the six-digit code from the Settings dialog and submits it automatically. If the helper is disabled, expand the **Pairing service found** notification and enter the code there instead.
+5. Keep the pairing dialog in the foreground until Shark returns to the app. The pairing notifications disappear after success.
+
+The pairing helper only observes `com.android.settings`. It does not read other apps or open a network port.
+
 ## Permissions and Preparation
 
 - **Stellar first, Shizuku as fallback**: when both are available Stellar is used; only when Stellar is unavailable does it fall back to Shizuku.
@@ -50,6 +62,8 @@ Each kernel version has its own K source file and `libk<version>.so`; there is n
 | Two or more consecutive failures | Reboot before the next attempt. A clean boot is more reliable than repeated retries. |
 | `LATE_LOAD_FAIL` | The module did not appear within the time limit; check the ksud output in the log, confirm the manager version matches, then retry directly. |
 | `EXIT=13` (`page event ids not found` / `votes=0`) | Turn off every toggle under Developer options -> **System trace**, reboot, then run again. The ftrace ring buffer was too busy to find the page-event pairs. |
+| `[calib] timers=0` / `PROBE_SLIDE ... aligned=0` | The build predates the KASLR-alignment fix for Issue #6. Update to 2.5.1-en.3 or newer; it is not an unsupported-device error. |
+| Wireless ADB pairing shows no code field | Enable notifications for Shark. The code input is a notification; if notifications or the `Pairing code` channel are disabled, Shark shows a settings prompt instead. |
 | High memory use after a run | The probe trace can leave ftrace enlarged. The app restores `tracing_on=0` / `buffer_size_kb=1` after a successful run; if it was skipped, do it manually with root. |
 | Kernel panic/reboot | An inherent risk of the 98260 race; reboot and run again. |
 
