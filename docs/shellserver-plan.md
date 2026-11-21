@@ -142,9 +142,11 @@ No custom socket and no new private protocol are needed.
   (`id`, env, cwd, streams, exit codes).
 - M3 done: the app uses the binder through the existing `PrivService.SHIZUKU`
   path; the full root flow succeeded on the OnePlus 15 (`exploit exit=0`).
-- M4 partial: `ShellSupervisorService` runs as a `specialUse` foreground
-  service and keeps the binder watched, but automatic restart still needs a
-  connected wireless ADB backend.
+- M4 done: `ShellSupervisorService` starts the server through wireless ADB,
+  Stellar or Shizuku. It still needs one live backend to restart a lost server,
+  so the first activation remains manual.
+- M4 hardening: `ShellBinder` now verifies the caller UID, reports the real
+  SELinux context, and implements `setprop` with key/value validation.
 
 ### Fixes found during bring-up
 
