@@ -99,7 +99,7 @@ object UpdateChecker {
         val releaseBody = json.optString("body")
         val expectedSha = apkAsset.digest
             ?.takeIf { it.startsWith("sha256:", ignoreCase = true) }
-            ?.removePrefix("sha256:")
+            ?.substringAfter(':')
             ?.takeIf { it.matches(Regex("[0-9a-fA-F]{64}")) }
             ?.lowercase()
             ?: shaAsset
