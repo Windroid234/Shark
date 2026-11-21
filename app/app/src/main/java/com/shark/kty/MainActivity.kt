@@ -293,7 +293,6 @@ class MainActivity : ComponentActivity() {
     private var historyDetailText by mutableStateOf("")
     private var pendingUpdate by mutableStateOf<UpdateInfo?>(null)
     private var updateDialogVisible by mutableStateOf(false)
-    private var pairingDialogPending = false
     private var updateDownloading by mutableStateOf(false)
     private var updateProgress by mutableStateOf(0f)
     private var updateError by mutableStateOf<String?>(null)
@@ -477,6 +476,7 @@ class MainActivity : ComponentActivity() {
                         addLog("Wireless ADB connected (port $adbPairingPort)")
                         binderReady = true
                         authorized = true
+                        AdbPairingService.cancel(this@MainActivity)
                     } else {
                         addLog("Wireless ADB connection failed (port $adbPairingPort)")
                     }
@@ -2416,7 +2416,33 @@ class MainActivity : ComponentActivity() {
             checkSelfPermission(it) != PackageManager.PERMISSION_GRANTED
         }
         if (missing.isNotEmpty()) {
+            addLog("Notification permission is required for the pairing code field")
             requestPermissions(missing.toTypedArray(), 1001)
+            return
+        }
+        val notificationManager = getSystemService(android.app.NotificationManager::class.java)
+        val notificationsEnabled = notificationManager.areNotificationsEnabled()
+        val alertChannel = notificationManager.getNotificationChannel(
+            AdbPairingService.alertNotificationChannel
+        )
+        val alertChannelBlocked =
+            alertChannel != null && alertChannel.importance == android.app.NotificationManager.IMPORTANCE_NONE
+        if (!notificationsEnabled || alertChannelBlocked) {
+            addLog("Pairing notifications are disabled; cannot show the code field")
+            android.app.AlertDialog.Builder(this)
+                .setTitle(R.string.pairing_notification_required_title)
+                .setMessage(R.string.pairing_notification_required_message)
+                .setPositiveButton(R.string.pairing_notification_settings) { _, _ ->
+                    runCatching {
+                        startActivity(
+                            Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                                .putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+                        )
+                    }
+                }
+                .setNegativeButton(R.string.accessibility_prompt_skip, null)
+                .show()
+            return
         }
         if (!isPairingAccessibilityEnabled()) {
             addLog("Pairing helper is not enabled")
@@ -2443,15 +2469,6 @@ class MainActivity : ComponentActivity() {
                 }
             )
         }
-        pairingDialogPending = true
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (pairingDialogPending) {
-            pairingDialogPending = false
-            showPairingCodeDialog()
-        }
     }
 
     private fun isPairingAccessibilityEnabled(): Boolean {
@@ -2463,34 +2480,6 @@ class MainActivity : ComponentActivity() {
         }.getOrNull() ?: return false
         val target = "$packageName/com.shark.kty.PairingAccessibilityService"
         return enabled.split(':').any { it.equals(target, ignoreCase = true) }
-    }
-
-    private fun showPairingCodeDialog() {
-        val input = android.widget.EditText(this).apply {
-            inputType = android.text.InputType.TYPE_CLASS_NUMBER
-            hint = getString(R.string.pairing_code_hint)
-            setSingleLine()
-        }
-        val padding = (16 * resources.displayMetrics.density).toInt()
-        val container = android.widget.FrameLayout(this).apply {
-            setPadding(padding, padding / 2, padding, 0)
-            addView(input)
-        }
-        android.app.AlertDialog.Builder(this)
-            .setTitle(R.string.pairing_code_dialog_title)
-            .setMessage(R.string.pairing_code_dialog_message)
-            .setView(container)
-            .setPositiveButton(R.string.pairing_code_pair) { _, _ ->
-                val code = input.text.toString().trim()
-                if (code.isEmpty()) {
-                    addLog("Pairing code is empty")
-                    return@setPositiveButton
-                }
-                startForegroundService(AdbPairingService.pairIntent(this, code))
-                addLog("Pairing code submitted in app")
-            }
-            .setNegativeButton(R.string.pairing_code_cancel, null)
-            .show()
     }
 
     private fun updateAutoRootOnBoot(value: Boolean) {

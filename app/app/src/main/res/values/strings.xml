@@ -167,4 +167,7 @@
     <string name="accessibility_prompt_title">Enable automatic pairing?</string>
     <string name="accessibility_prompt_message">Shark can read the pairing code from Settings automatically. Enable the Shark pairing helper under Accessibility to skip typing the code.</string>
     <string name="accessibility_prompt_open">Open settings</string>
-    <string name="accessibility_prompt_skip">Not now</string></resources>
+    <string name="accessibility_prompt_skip">Not now</string>
+    <string name="pairing_notification_required_title">Notifications are off</string>
+    <string name="pairing_notification_required_message">Shark shows the pairing-code field in a notification. Enable notifications for Shark, then tap Wireless ADB again.</string>
+    <string name="pairing_notification_settings">Open notification settings</string></resources>

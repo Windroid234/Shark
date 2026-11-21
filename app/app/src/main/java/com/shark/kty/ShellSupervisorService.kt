@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 class ShellSupervisorService : Service() {
     companion object {
         private const val TAG = "SharkShell"
-        private const val CHANNEL_ID = "shark_shell"
+        private const val CHANNEL_ID = "shark_shell_quiet"
         private const val NOTIFICATION_ID = 98260
         private const val WAKE_LOCK_TAG = "shark:shell-keeper"
         private const val WAKE_LOCK_TIMEOUT_MS = 10 * 60 * 1000L
@@ -143,10 +143,11 @@ class ShellSupervisorService : Service() {
             val channel = NotificationChannel(
                 CHANNEL_ID,
                 getString(R.string.shell_channel_name),
-                NotificationManager.IMPORTANCE_LOW
+                NotificationManager.IMPORTANCE_MIN
             ).apply {
                 description = getString(R.string.shell_channel_desc)
                 setShowBadge(false)
+                setSound(null, null)
             }
             manager.createNotificationChannel(channel)
         }
@@ -164,6 +165,8 @@ class ShellSupervisorService : Service() {
             .setContentTitle(getString(R.string.shell_notification_title))
             .setContentText(text)
             .setOngoing(true)
+            .setSilent(true)
+            .setShowWhen(false)
             .setContentIntent(pendingIntent)
             .build()
     }

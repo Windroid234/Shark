@@ -80,6 +80,16 @@ class AdbPairingService : Service() {
         private fun stopAndRetryIntent(context: Context): Intent =
             Intent(context, AdbPairingService::class.java).setAction(stopAndRetryAction)
 
+        /** Drop every pairing notification and stop discovery. */
+        fun cancel(context: Context) {
+            runCatching {
+                val manager = context.getSystemService(NotificationManager::class.java)
+                manager.cancel(notificationId)
+                manager.cancel(alertNotificationId)
+            }
+            runCatching { context.stopService(Intent(context, AdbPairingService::class.java)) }
+        }
+
         private fun replyIntent(context: Context, port: Int): Intent =
             Intent(context, AdbPairingService::class.java).setAction(replyAction).putExtra(portKey, port)
     }
@@ -241,6 +251,9 @@ class AdbPairingService : Service() {
     private fun stopSearch() {
         if (!started) return
         started = false
+        runCatching {
+            getSystemService(NotificationManager::class.java).cancel(alertNotificationId)
+        }
         try {
             adbMdns?.stop()
         } catch (e: Exception) {
@@ -583,6 +596,11 @@ class AdbPairingService : Service() {
         }
         startActivity(intent)
 
+        runCatching {
+            val manager = getSystemService(NotificationManager::class.java)
+            manager.cancel(notificationId)
+            manager.cancel(alertNotificationId)
+        }
         stopForeground(STOP_FOREGROUND_REMOVE)
         isRunning = false
         pairingActive = false
