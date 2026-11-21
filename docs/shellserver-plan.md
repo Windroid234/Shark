@@ -147,6 +147,10 @@ No custom socket and no new private protocol are needed.
   so the first activation remains manual.
 - M4 hardening: `ShellBinder` now verifies the caller UID, reports the real
   SELinux context, and implements `setprop` with key/value validation.
+- M4 watchdog: `ShellServer` spawns a detached shell watchdog
+  (`/data/local/tmp/shark-watchdog.lock`). Verified on the OnePlus 15: killing
+  `shark_shell` twice produced a new server in under 7 seconds each time, with a
+  single watchdog and automatic app reconnection.
 
 ### Fixes found during bring-up
 
