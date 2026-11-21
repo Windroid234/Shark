@@ -29,6 +29,7 @@ class ShellSupervisorService : Service() {
         private const val WAKE_LOCK_TIMEOUT_MS = 10 * 60 * 1000L
         private const val LOOP_DELAY_MS = 5_000L
         private const val MAX_WAIT_MS = 30_000L
+        private const val READY_HOLD_MS = 10_000L
 
         fun start(context: android.content.Context) {
             val intent = Intent(context, ShellSupervisorService::class.java)
@@ -46,6 +47,7 @@ class ShellSupervisorService : Service() {
     private var worker: Thread? = null
     private var wakeLock: PowerManager.WakeLock? = null
     private var waitingSince = 0L
+    private var readySince = 0L
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -94,6 +96,7 @@ class ShellSupervisorService : Service() {
                     notify(buildNotification(text))
                 }
                 if (!ready) {
+                    readySince = 0L
                     if (waitingSince == 0L) {
                         waitingSince = System.currentTimeMillis()
                     } else if (System.currentTimeMillis() - waitingSince > MAX_WAIT_MS &&
@@ -109,6 +112,15 @@ class ShellSupervisorService : Service() {
                     startServerIfPossible()
                 } else {
                     waitingSince = 0L
+                    if (readySince == 0L) {
+                        readySince = System.currentTimeMillis()
+                    } else if (System.currentTimeMillis() - readySince > READY_HOLD_MS) {
+                        Log.i(TAG, "shell is running; stopping supervisor")
+                        stopForeground(STOP_FOREGROUND_REMOVE)
+                        running.set(false)
+                        stopSelf()
+                        return
+                    }
                 }
             } catch (e: InterruptedException) {
                 return
