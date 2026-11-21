@@ -116,17 +116,25 @@ class ShellSupervisorService : Service() {
     }
 
     private fun startServerIfPossible() {
-        if (!WirelessAdb.connected) {
-            return
-        }
         val starter = File(applicationInfo.nativeLibraryDir, "libstarter.so")
         if (!starter.exists()) {
             Log.w(TAG, "supervisor: libstarter.so missing")
             return
         }
-        val command = "setsid ${starter.absolutePath} </dev/null >/dev/null 2>&1"
-        val result = runCatching { WirelessAdb.runShell(command) }.getOrNull()
-        Log.i(TAG, "supervisor start rc=${result?.first} out=${result?.second}")
+        when (PrivService.pick()) {
+            PrivBackend.WIRELESS_ADB -> {
+                val command = "setsid ${starter.absolutePath} </dev/null >/dev/null 2>&1"
+                val result = runCatching { WirelessAdb.runShell(command) }.getOrNull()
+                Log.i(TAG, "supervisor start via adb rc=${result?.first}")
+            }
+            PrivBackend.STELLAR, PrivBackend.SHIZUKU -> {
+                runCatching {
+                    PrivService.newProcess(arrayOf(starter.absolutePath), null, "/")
+                }.onFailure { Log.w(TAG, "supervisor start via binder failed: $it") }
+                Log.i(TAG, "supervisor start via ${PrivService.pick()?.label}")
+            }
+            null -> return
+        }
     }
 
     private fun createChannel() {

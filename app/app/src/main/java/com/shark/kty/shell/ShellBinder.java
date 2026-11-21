@@ -1,6 +1,8 @@
 package com.shark.kty.shell;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Parcel;
@@ -8,7 +10,10 @@ import android.os.Process;
 import android.os.RemoteException;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.regex.Pattern;
 
 import moe.shizuku.server.IRemoteProcess;
 import moe.shizuku.server.IShizukuApplication;
@@ -23,10 +28,24 @@ public final class ShellBinder extends IShizukuService.Stub {
     private static final int SERVER_VERSION = 13;
     private static final int PROBE_MAGIC = 0x53484b;
     public static final int TRANSACTION_PROBE = 0x5348;
+    private static final Pattern PROP_KEY = Pattern.compile("[A-Za-z0-9_.-]+");
 
-    private static String readCommand(String command) {
+    private final int appUid;
+
+    public ShellBinder(int appUid) {
+        this.appUid = appUid;
+    }
+
+    private boolean isAllowedCaller() {
+        int uid = Binder.getCallingUid();
+        return uid == Process.myUid() || (appUid > 0 && uid == appUid);
+    }
+
+    private static String readCommand(String... command) {
         try {
-            java.lang.Process process = Runtime.getRuntime().exec(command);
+            java.lang.Process process = new ProcessBuilder(command)
+                    .redirectErrorStream(true)
+                    .start();
             StringBuilder builder = new StringBuilder();
             try (BufferedReader reader = new BufferedReader(
                     new InputStreamReader(process.getInputStream()))) {
@@ -42,6 +61,19 @@ public final class ShellBinder extends IShizukuService.Stub {
         }
     }
 
+    private static String readCurrentContext() {
+        try (FileInputStream input = new FileInputStream("/proc/self/attr/current")) {
+            byte[] buffer = new byte[256];
+            int read = input.read(buffer);
+            if (read > 0) {
+                return new String(buffer, 0, read, StandardCharsets.UTF_8).trim();
+            }
+        } catch (Throwable ignored) {
+        }
+        String fallback = readCommand("id", "-Z").trim();
+        return fallback.isEmpty() ? "u:r:shell:s0" : fallback;
+    }
+
     @Override
     public int getVersion() {
         return SERVER_VERSION;
@@ -54,12 +86,13 @@ public final class ShellBinder extends IShizukuService.Stub {
 
     @Override
     public int checkPermission(String permission) {
-        return 0;
+        return isAllowedCaller() ? PackageManager.PERMISSION_GRANTED
+                : PackageManager.PERMISSION_DENIED;
     }
 
     @Override
     public boolean checkSelfPermission() {
-        return true;
+        return isAllowedCaller();
     }
 
     @Override
@@ -78,17 +111,32 @@ public final class ShellBinder extends IShizukuService.Stub {
 
     @Override
     public String getSELinuxContext() {
-        return readCommand("getenforce").trim();
+        return readCurrentContext();
     }
 
     @Override
     public String getSystemProperty(String key, String defaultValue) {
-        String value = readCommand("getprop " + key).trim();
+        if (key == null || !PROP_KEY.matcher(key).matches()) {
+            return defaultValue;
+        }
+        String value = readCommand("getprop", key).trim();
         return value.isEmpty() ? defaultValue : value;
     }
 
     @Override
     public void setSystemProperty(String key, String value) {
+        if (key == null || value == null || !PROP_KEY.matcher(key).matches()) {
+            return;
+        }
+        if (value.indexOf('\n') >= 0 || value.indexOf('\r') >= 0 ||
+                value.indexOf('\0') >= 0) {
+            return;
+        }
+        try {
+            java.lang.Process process = new ProcessBuilder("setprop", key, value).start();
+            process.waitFor();
+        } catch (Throwable ignored) {
+        }
     }
 
     @Override
@@ -159,6 +207,9 @@ public final class ShellBinder extends IShizukuService.Stub {
                 reply.writeInt(PROBE_MAGIC);
             }
             return true;
+        }
+        if (!isAllowedCaller()) {
+            return false;
         }
         return super.onTransact(code, data, reply, flags);
     }
