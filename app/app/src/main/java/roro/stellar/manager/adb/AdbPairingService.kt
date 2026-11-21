@@ -119,7 +119,7 @@ class AdbPairingService : Service() {
 
     private val observer = Observer<Int> { port ->
         Log.i(tag, "pairing service port: $port")
-        if (port <= 0) {
+        if (port <= 0 || !pairingActive) {
             return@Observer
         }
 
@@ -148,6 +148,7 @@ class AdbPairingService : Service() {
     }
 
     private fun showPairingAlert(port: Int) {
+        if (!pairingActive) return
         val alertNotification = Notification.Builder(this, alertNotificationChannel)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(getString(R.string.pairing_service_found))
@@ -249,7 +250,6 @@ class AdbPairingService : Service() {
     }
 
     private fun stopSearch() {
-        if (!started) return
         started = false
         runCatching {
             getSystemService(NotificationManager::class.java).cancel(alertNotificationId)
@@ -439,6 +439,10 @@ class AdbPairingService : Service() {
         retryHandler.post {
             if (success) {
                 Log.i(tag, "paired; searching for the connect service")
+                pairingActive = false
+                runCatching {
+                    getSystemService(NotificationManager::class.java).cancel(alertNotificationId)
+                }
                 stopSearch()
 
                 val successNotification = Notification.Builder(this, notificationChannel)
