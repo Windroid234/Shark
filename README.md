@@ -350,6 +350,7 @@ installed alongside this one, but settings and history are not migrated.
 | `2.5-en.14` | 2.5 | Manual: `FAIL=selinux` retry-versus-reboot guidance |
 | `2.5.1-en.1` | 2.5.1 | Aligned with upstream 2.5.1: removed all vivo/iQOO support; added Xiaomi Xuanjie O1 (Pad 7S Pro) and O3 (Pad 9 Pro Max) 6.18.21 profiles |
 | `2.5.1-en.2` | 2.5.1 | Fixed update checker: `2.5-en.14` no longer compares as newer than `2.5.1`, so the update dialog appears again |
+| `2.5.1-en.3` | 2.5.1 | Issue #6: 6.6.118 KASLR low-21 alignment fix; automatic wireless pairing via the accessibility helper; paired-notification cleanup; supervisor timeout; manual/README updates |
 
 Each release stamps its own `2.5-en.N` version and is signed with the fork's
 release key. Every release ships the signed APK together with its SHA-256 file.
