@@ -28,6 +28,7 @@ class ShellSupervisorService : Service() {
         private const val WAKE_LOCK_TAG = "shark:shell-keeper"
         private const val WAKE_LOCK_TIMEOUT_MS = 10 * 60 * 1000L
         private const val LOOP_DELAY_MS = 5_000L
+        private const val MAX_WAIT_MS = 30_000L
 
         fun start(context: android.content.Context) {
             val intent = Intent(context, ShellSupervisorService::class.java)
@@ -44,6 +45,7 @@ class ShellSupervisorService : Service() {
     private val running = AtomicBoolean(false)
     private var worker: Thread? = null
     private var wakeLock: PowerManager.WakeLock? = null
+    private var waitingSince = 0L
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -92,8 +94,21 @@ class ShellSupervisorService : Service() {
                     notify(buildNotification(text))
                 }
                 if (!ready) {
+                    if (waitingSince == 0L) {
+                        waitingSince = System.currentTimeMillis()
+                    } else if (System.currentTimeMillis() - waitingSince > MAX_WAIT_MS &&
+                        !WirelessAdb.connected && PrivService.pick() == null
+                    ) {
+                        Log.i(TAG, "no backend after ${MAX_WAIT_MS}ms; stopping supervisor")
+                        stopForeground(STOP_FOREGROUND_REMOVE)
+                        running.set(false)
+                        stopSelf()
+                        return
+                    }
                     requestBinder()
                     startServerIfPossible()
+                } else {
+                    waitingSince = 0L
                 }
             } catch (e: InterruptedException) {
                 return
