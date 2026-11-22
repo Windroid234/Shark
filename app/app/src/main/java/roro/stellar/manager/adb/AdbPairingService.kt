@@ -379,14 +379,23 @@ class AdbPairingService : Service() {
             AdbKey(PreferenceAdbKeyStore(StellarSettings.getPreferences()), "Stellar")
         }.getOrNull() ?: return false
         return runCatching {
-            AdbPairingClient("127.0.0.1", port, code, key).start()
+            AdbPairingClient(
+                "127.0.0.1", port, code, key,
+                connectTimeoutMs = 3_000,
+                readTimeoutMs = 8_000,
+            ).start()
         }.getOrDefault(false)
     }
 
     private fun pairAcrossCandidates(code: String): Boolean {
         val candidates = candidatePorts()
         Log.i(tag, "pairing candidates (${candidates.size}): $candidates")
+        val deadline = System.currentTimeMillis() + 20_000L
         for (port in candidates) {
+            if (System.currentTimeMillis() >= deadline) {
+                Log.w(tag, "pairing candidate deadline reached")
+                break
+            }
             val ok = pairOnPort(code, port)
             Log.i(tag, "pair attempt on $port: $ok")
             if (ok) return true

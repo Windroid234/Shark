@@ -67,6 +67,21 @@ Each kernel version has its own K source file and `libk<version>.so`; there is n
 | High memory use after a run | The probe trace can leave ftrace enlarged. The app restores `tracing_on=0` / `buffer_size_kb=1` after a successful run; if it was skipped, do it manually with root. |
 | Kernel panic/reboot | An inherent risk of the 98260 race; reboot and run again. |
 
+## Diagnostics
+
+The native runner has a `probe` subcommand that prints the calibration values
+without running the root chain. It is useful when reporting a device that is
+rejected during calibration:
+
+```bash
+adb shell "cd /data/app/*/com.shark.kty-*/lib/arm64 && ./libk66118.so probe"
+```
+
+Use the library that matches the kernel (`libk61269.so`, `libk61258.so`,
+`libk61238.so`, or `libk66118.so`). The output includes `PROBE_SLIDE`,
+`low_adj`, timer records, and the cred/task diagnostics. `--help` lists the
+other subcommands.
+
 ## Run Modes
 
 - **6.18.21** → `libk61821.so`; **6.12.69** → `libk61269.so` (the two OTA builds select the call site by uname).

@@ -180,6 +180,14 @@ happen on a clean boot with no KSU loaded; hot replacement is not possible once
 The helper only observes `com.android.settings`; it does not read other apps or
 open a network port.
 
+### Experimental builds
+
+Experimental APKs use a separate versionCode (`9001`, `9002`, ...) so they can
+update over each other, but a public release (`1036`, ...) cannot be installed
+over an experimental build. Uninstall the experimental APK before switching to
+a public release. The public update path from `2.5.1-en.2` (`1035`) to
+`2.5.1-en.3` (`1036`) is unaffected.
+
 ## Project structure
 
 Shark consists of the Android app, the on-device exploit runner, and optional kernel modules.
