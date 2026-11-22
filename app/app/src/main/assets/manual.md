@@ -77,6 +77,24 @@ Each kernel version has its own K source file and `libk<version>.so`; there is n
 | Wireless ADB pairing shows no code field | Enable notifications for Shark. The code input is a notification; if notifications or the `Pairing code` channel are disabled, Shark shows a settings prompt instead. |
 | High memory use after a run | The probe trace can leave ftrace enlarged. The app restores `tracing_on=0` / `buffer_size_kb=1` after a successful run; if it was skipped, do it manually with root. |
 | Kernel panic/reboot | An inherent risk of the 98260 race; reboot and run again. |
+| Manager does not see root after a successful run, or a Zygisk/mount module is not active | Enable **Soft reboot after rooting** once. This restarts Android's zygote/userspace while keeping the kernel module loaded, so temporary root survives. Leave it off otherwise. |
+
+### Soft reboot after rooting
+
+**Soft reboot** runs `setprop ctl.restart zygote`. It restarts Android's
+userspace, not the kernel, so KernelSU and the temporary root stay loaded.
+
+Enable it only when:
+
+- the root manager does not recognize root immediately after late-load;
+- a Zygisk, overlayfs, mount, or hide module needs a framework restart;
+- SUSFS/VFS or mount changes are not visible to apps yet;
+- you want a clean framework state without losing the temporary root.
+
+Do **not** enable it for ordinary rooting. A soft reboot closes running apps
+and can drop the Wireless ADB connection; use the 1-3 minute delay if you need
+to finish setup first. If a full reboot is acceptable, prefer a normal reboot
+instead — it also clears stale plant holders.
 
 ## Diagnostics
 
