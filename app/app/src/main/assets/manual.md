@@ -83,6 +83,9 @@ Each kernel version has its own K source file and `libk<version>.so`; there is n
 
 **Soft reboot** runs `setprop ctl.restart zygote`. It restarts Android's
 userspace, not the kernel, so KernelSU and the temporary root stay loaded.
+There is no separate button: enable the switch, then run One-click root; Shark
+restarts zygote automatically after a successful run (or after the configured
+delay).
 
 Enable it only when:
 
