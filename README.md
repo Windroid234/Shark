@@ -180,6 +180,35 @@ happen on a clean boot with no KSU loaded; hot replacement is not possible once
 The helper only observes `com.android.settings`; it does not read other apps or
 open a network port.
 
+### Wired ADB activation
+
+When USB debugging is available, a PC can start the privileged shell directly;
+no Wireless debugging pairing is needed.
+
+1. Enable USB debugging and authorize the PC.
+2. Keep Shark installed (the app can be in the background).
+3. From this repository, run:
+
+```bash
+tools/wired-adb.sh
+```
+
+The script starts `ShellServer` as the shell user through `app_process`. Shark
+detects the Shizuku-compatible binder and shows **Shizuku authorized**; the
+normal One-click root flow then works over the wired connection.
+
+To run it manually:
+
+```bash
+APK=$(adb shell pm path com.shark.kty | sed -n 's/^package://p' | tr -d '\r')
+adb shell "CLASSPATH='$APK' setsid app_process /system/bin \
+  --nice-name=shark_shell com.shark.kty.shell.ShellServer \
+  </dev/null >/dev/null 2>&1 &"
+```
+
+The shell server is a normal shell process; it does not write partitions. The
+watchdog keeps it alive until the device reboots.
+
 ### Experimental builds
 
 Experimental APKs use a separate versionCode (`9001`, `9002`, ...) so they can

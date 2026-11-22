@@ -25,6 +25,17 @@ Shark can use Android's Wireless debugging as the privileged backend, so no PC, 
 
 The pairing helper only observes `com.android.settings`. It does not read other apps or open a network port.
 
+## Wired ADB Activation (PC)
+
+If USB debugging is available, a PC can start the privileged shell without Wireless debugging pairing.
+
+1. Connect USB, enable **USB debugging**, and authorize the PC.
+2. Keep Shark installed; the app may stay in the background.
+3. From the Shark repository, run `tools/wired-adb.sh`.
+4. Open Shark. The status card changes to **Shizuku authorized**, and One-click root works over the wired connection.
+
+The script runs `ShellServer` as the shell user through `app_process`. It is a normal shell process and does not write partitions.
+
 ## Permissions and Preparation
 
 - **Stellar first, Shizuku as fallback**: when both are available Stellar is used; only when Stellar is unavailable does it fall back to Shizuku.
