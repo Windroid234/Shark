@@ -305,6 +305,7 @@ class MainActivity : ComponentActivity() {
     private var droidspacesProgress by mutableStateOf(0f)
     private var droidspacesError by mutableStateOf<String?>(null)
     private var droidspacesSavedPath by mutableStateOf<String?>(null)
+    private var pairingHelperEnabled by mutableStateOf(false)
 
     /* UI-only state hoisted for the COUI top bar / dialogs. */
     private var aboutPage by mutableStateOf(AboutPage.HOME)
@@ -336,8 +337,14 @@ class MainActivity : ComponentActivity() {
         if (ok) refreshKsuAsync()
     }
 
+    override fun onResume() {
+        super.onResume()
+        pairingHelperEnabled = isPairingAccessibilityEnabled()
+    }
+
     override fun onStart() {
         super.onStart()
+        pairingHelperEnabled = isPairingAccessibilityEnabled()
         if (BuildConfig.VERSION_NAME.contains("exp", ignoreCase = true)) return
         if (updateCheckedThisForeground) return
         updateCheckedThisForeground = true
@@ -1591,6 +1598,20 @@ class MainActivity : ComponentActivity() {
                             title = stringResource(R.string.wireless_adb_pairing),
                             summary = stringResource(R.string.wireless_adb_pairing_summary),
                             onClick = { startWirelessAdbPairing() }
+                        )
+                        Divider(startIndent = itemDividerIndent(), color = colors.divider)
+                        SettingItem(
+                            icon = Icons.Filled.Security,
+                            title = stringResource(R.string.pairing_helper_title),
+                            summary = stringResource(
+                                if (pairingHelperEnabled) R.string.pairing_helper_enabled
+                                else R.string.pairing_helper_disabled
+                            ),
+                            onClick = {
+                                runCatching {
+                                    startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+                                }
+                            }
                         )
                         Divider(startIndent = itemDividerIndent(), color = colors.divider)
                         if (!hidesOplusOnlyOptions()) {

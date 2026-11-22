@@ -334,6 +334,9 @@ installed alongside this one, but settings and history are not migrated.
   **pre-release** with the APK removed, so their old links still lead to
   https://github.com/kpgc10kai/Shark/releases/latest
 - Only the latest build of each line carries downloadable assets.
+- Archiving is scripted: `tools/archive-release.sh v2.5.1-en.2` removes the
+  assets, marks the release as a pre-release, and leaves the latest-download
+  notice.
 
 ### Update history
 
