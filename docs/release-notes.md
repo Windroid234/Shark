@@ -7,7 +7,29 @@ English fork of [Yunnijian/Shark](https://github.com/Yunnijian/Shark).
 Root is temporary and disappears after a reboot. The kernel build must match
 one of the versions below **exactly**; anything else is rejected.
 
-## What's new in 2.5.1-en.3
+## What's new in 2.5.1-en.4
+
+- **Wired ADB activation**: `tools/wired-adb.sh` starts the privileged shell
+  server over a USB ADB connection. Shark detects it as the Shizuku backend,
+  so One-click root works without Wireless debugging pairing.
+- **Pairing helper status**: Extras now shows whether the accessibility pairing
+  helper is enabled and opens the Accessibility settings directly.
+- **Bounded pairing attempts**: pairing uses shorter socket timeouts and a
+  20-second candidate deadline instead of leaving `Pairing…` running.
+- **Faster update checks**: GitHub release asset `digest` values are used
+  first, avoiding a `.sha256.txt` download on every check. Gitee and older
+  responses still fall back to the checksum file or release body.
+- **Shell supervisor cleanup**: after the privileged shell is running for
+  10 seconds, the supervisor stops and removes its notification; the detached
+  watchdog keeps ShellServer alive.
+- **Diagnostics**: `--help` and the `probe` subcommand are documented, and the
+  no-argument path now reports failure instead of printing a misleading
+  `ROOT_SHELL_OK`.
+- **Release tooling**: `tools/archive-release.sh` archives a superseded release
+  by removing its assets, marking it as a pre-release, and leaving a latest
+  download notice.
+
+## 2.5.1-en.3
 
 - **6.6.118 KASLR alignment fix (Issue #6)**: the plant no longer assumes a
   2 MiB-aligned kernel image. It sweeps 64 KiB candidates for the low-21-bit

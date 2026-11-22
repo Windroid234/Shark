@@ -101,6 +101,9 @@ installed manager APK, so **install the manager you intend to use first**.
   helper enabled, Shark reads the six-digit pairing code from Settings and
   submits it automatically; otherwise the code can be entered from the pairing
   notification.
+- **Wired ADB activation**: Connect USB and run `tools/wired-adb.sh` to start
+  the privileged shell through ADB. Shark detects it as the Shizuku backend, so
+  no Wireless debugging pairing is required.
 - **Auto root on boot**: When enabled, the one-tap flow runs after boot and the
   result is shown in the log. The app asks for the "Display over other apps"
   permission so it can start from the background; allow Shark to auto-start in
@@ -391,13 +394,13 @@ installed alongside this one, but settings and history are not migrated.
 | `2.5.1-en.1` | 2.5.1 | Aligned with upstream 2.5.1: removed all vivo/iQOO support; added Xiaomi Xuanjie O1 (Pad 7S Pro) and O3 (Pad 9 Pro Max) 6.18.21 profiles |
 | `2.5.1-en.2` | 2.5.1 | Fixed update checker: `2.5-en.14` no longer compares as newer than `2.5.1`, so the update dialog appears again |
 | `2.5.1-en.3` | 2.5.1 | Issue #6: 6.6.118 KASLR low-21 alignment fix; automatic wireless pairing via the accessibility helper; paired-notification cleanup; supervisor timeout; manual/README updates |
+| `2.5.1-en.4` | 2.5.1 | Wired ADB activation (`tools/wired-adb.sh`); pairing-helper status in Extras; bounded pairing timeouts; digest-first update checks; supervisor notification cleanup; `probe`/`--help` and no-arg diagnostics; archive tooling |
 
 Each release stamps its own `2.5-en.N` version and is signed with the fork's
 release key. Every release ships the signed APK together with its SHA-256 file.
 
 ### Planned / not yet ported
 
-- **Wired ADB activation** — start the privileged backend over USB ADB.
 - **Pairing UI polish / English strings** — the current pairing flow uses the
   notification-based code entry inherited from Stellar; dedicated in-app screens
   and translations are still pending.
