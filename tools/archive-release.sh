@@ -16,12 +16,14 @@ if ! gh release view "v$tag" --repo "$repo" >/dev/null 2>&1; then
     exit 1
 fi
 
-assets=$(gh release view "v$tag" --repo "$repo" --json assets --jq '.assets[].name')
+assets_file=$(mktemp)
+trap 'rm -f "$assets_file"' EXIT
+gh release view "v$tag" --repo "$repo" --json assets --jq '.assets[].name' | tr -d '\r' > "$assets_file"
 while IFS= read -r asset; do
     [ -n "$asset" ] || continue
     echo "deleting $asset"
-    gh release delete-asset "v$tag" "$asset" --repo "$repo" --yes
-done <<< "$assets"
+    gh release delete-asset "v$tag" "$asset" --repo "$repo" --yes </dev/null
+done < "$assets_file"
 
 gh release edit "v$tag" \
     --repo "$repo" \
