@@ -29,23 +29,6 @@ one of the versions below **exactly**; anything else is rejected.
   by removing its assets, marking it as a pre-release, and leaving a latest
   download notice.
 
-## 2.5.1-en.3
-
-- **6.6.118 KASLR alignment fix (Issue #6)**: the plant no longer assumes a
-  2 MiB-aligned kernel image. It sweeps 64 KiB candidates for the low-21-bit
-  adjustment, so devices whose virtual slide includes a physical-placement
-  offset calibrate instead of reporting `timers=0`.
-- **Automatic wireless pairing**: with the accessibility helper enabled, Shark
-  reads the six-digit code from the Settings pairing dialog and submits it
-  automatically. The notification code field remains available as a fallback.
-- **Pairing notification cleanup**: stale and duplicate pairing notifications
-  are cleared on success, and the code field no longer remains after pairing.
-- **Shell supervisor timeout**: if no backend appears within 30 seconds, the
-  supervisor stops and removes its notification instead of waiting forever.
-- **Documentation**: the manual and README now cover automatic pairing,
-  notification permissions, and the `timers=0` / `aligned=0` troubleshooting
-  case.
-
 ## Fork features
 
 - **Wireless ADB pairing** (experimental): pair from Settings, auto-grant
