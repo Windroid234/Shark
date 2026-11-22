@@ -396,6 +396,7 @@ installed alongside this one, but settings and history are not migrated.
 | `2.5.1-en.3` | 2.5.1 | Issue #6: 6.6.118 KASLR low-21 alignment fix; automatic wireless pairing via the accessibility helper; paired-notification cleanup; supervisor timeout; manual/README updates |
 | `2.5.1-en.4` | 2.5.1 | Wired ADB activation (`tools/wired-adb.sh`); pairing-helper status in Extras; bounded pairing timeouts; digest-first update checks; supervisor notification cleanup; `probe`/`--help` and no-arg diagnostics; archive tooling |
 | `2.5.1-en.5` | 2.5.1 | SukiSU Nova manager support; robust pairing-code auto entry; KASLR single-scan fast path for aligned kernels; soft-reboot troubleshooting guidance |
+| `2.5.1-en.6` | 2.5.1 | YukiSU manager support (`org.rouyashiki.yukisu`); seven manager choices; YukiSU late-load and universal-switch integration |
 
 Each release stamps its own `2.5-en.N` version and is signed with the fork's
 release key. Every release ships the signed APK together with its SHA-256 file.

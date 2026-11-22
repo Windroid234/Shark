@@ -7,21 +7,16 @@ English fork of [Yunnijian/Shark](https://github.com/Yunnijian/Shark).
 Root is temporary and disappears after a reboot. The kernel build must match
 one of the versions below **exactly**; anything else is rejected.
 
-## What's new in 2.5.1-en.5
+## What's new in 2.5.1-en.6
 
-- **SukiSU Nova support**: Root manager selection now includes SukiSU Nova
-  (`com.sukisu.nova`). Its signed `liblaapkjdiji.so` payload is detected as the
-  ksud binary, and Nova is included in the universal manager switch.
-- **Pairing-code auto entry fixed**: the accessibility helper now checks the
-  event source, every interactive window, and content descriptions, tolerates
-  popup timing, and retries the same code after 10 seconds. Automatic pairing
-  works even when the pairing service was no longer marked active.
-- **KASLR calibration fast path**: aligned kernels take the original single
-  scan again, while non-2 MiB slides still use the full 64 KiB candidate sweep.
-  The fast path requires at least 64 timer records to avoid false positives.
-- **Soft reboot guidance**: the manual now explains that there is no separate
-  button; enabling the switch makes the next successful root restart zygote
-  automatically. It also lists the cases where that is actually useful.
+- **YukiSU manager support**: Root manager selection now includes YukiSU
+  (`org.rouyashiki.yukisu`). Shark resolves its `lib/arm64/libksud.so` payload
+  even though YukiSU does not print a KernelSU-style `uapi` version string, and
+  the normal late-load path works end-to-end.
+- **Seven manager choices**: KernelSU, KernelSU-Next, BakaSU, SukiSU Ultra,
+  SukiSU Nova, YukiSU, and FinaSU.
+- YukiSU is included in the universal manager switch and the manager
+  force-stop list.
 
 ## Fork features
 
