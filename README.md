@@ -30,7 +30,7 @@ Shark supports OnePlus, OPPO, Realme, and other devices, with no BL unlock
 required; all you need to begin is adb shell. Through Stellar or Shizuku, the app
 drives the on-device exploit, gains temporary kernel privileges, then loads the LKM
 for the selected manager, ultimately providing a KernelSU, KernelSU-Next, BakaSU,
-SukiSU Ultra, or FinaSU root environment.
+SukiSU Ultra, SukiSU Nova, or FinaSU root environment.
 
 ## Interface
 
@@ -83,7 +83,7 @@ SukiSU Ultra, or FinaSU root environment.
 
 ## Supported managers
 
-Five options are supported: KernelSU, KernelSU-Next, BakaSU, SukiSU Ultra, and FinaSU.
+Six options are supported: KernelSU, KernelSU-Next, BakaSU, SukiSU Ultra, SukiSU Nova, and FinaSU.
 
 Manager APKs are not distributed with Shark. Normal mode uses the `ksud` inside the
 installed manager APK, so **install the manager you intend to use first**.
@@ -110,7 +110,7 @@ installed manager APK, so **install the manager you intend to use first**.
   your device's battery/settings screen, or it cannot run after a reboot. If the
   previous automatic attempt never finished (a reboot during the flow), the
   option disables itself to avoid a loop.
-- **Five manager choices**: Pick KernelSU, KernelSU-Next, BakaSU, SukiSU Ultra, or
+- **Six manager choices**: Pick KernelSU, KernelSU-Next, BakaSU, SukiSU Ultra, SukiSU Nova, or
   FinaSU directly from the ROOT Manager dropdown. The app is not tied to a single
   manager; the manager APK must be installed separately, and normal mode uses the
   `ksud` and LKM from that APK.

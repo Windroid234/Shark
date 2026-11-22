@@ -20,6 +20,7 @@
         <package android:name="com.rifsxd.ksunext" />
         <package android:name="com.resukisu.resukisu" />
         <package android:name="com.sukisu.ultra" />
+        <package android:name="com.sukisu.nova" />
     </queries>
 
     <application

@@ -2948,6 +2948,7 @@ class MainActivity : ComponentActivity() {
         NEXT("KernelSU Next", "com.rifsxd.ksunext", "next"),
         BAKASU("BakaSU", "com.resukisu.resukisu", "bakasu"),
         SUKISU("SukiSU Ultra", "com.sukisu.ultra", "sukisu"),
+        NOVA("SukiSU Nova", "com.sukisu.nova", "nova"),
         DYNAMIC("Dynamic Switching", "me.weishu.kernelsu", "kernelsu")
     }
 
