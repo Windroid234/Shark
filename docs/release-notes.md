@@ -7,27 +7,21 @@ English fork of [Yunnijian/Shark](https://github.com/Yunnijian/Shark).
 Root is temporary and disappears after a reboot. The kernel build must match
 one of the versions below **exactly**; anything else is rejected.
 
-## What's new in 2.5.1-en.4
+## What's new in 2.5.1-en.5
 
-- **Wired ADB activation**: `tools/wired-adb.sh` starts the privileged shell
-  server over a USB ADB connection. Shark detects it as the Shizuku backend,
-  so One-click root works without Wireless debugging pairing.
-- **Pairing helper status**: Extras now shows whether the accessibility pairing
-  helper is enabled and opens the Accessibility settings directly.
-- **Bounded pairing attempts**: pairing uses shorter socket timeouts and a
-  20-second candidate deadline instead of leaving `Pairing…` running.
-- **Faster update checks**: GitHub release asset `digest` values are used
-  first, avoiding a `.sha256.txt` download on every check. Gitee and older
-  responses still fall back to the checksum file or release body.
-- **Shell supervisor cleanup**: after the privileged shell is running for
-  10 seconds, the supervisor stops and removes its notification; the detached
-  watchdog keeps ShellServer alive.
-- **Diagnostics**: `--help` and the `probe` subcommand are documented, and the
-  no-argument path now reports failure instead of printing a misleading
-  `ROOT_SHELL_OK`.
-- **Release tooling**: `tools/archive-release.sh` archives a superseded release
-  by removing its assets, marking it as a pre-release, and leaving a latest
-  download notice.
+- **SukiSU Nova support**: Root manager selection now includes SukiSU Nova
+  (`com.sukisu.nova`). Its signed `liblaapkjdiji.so` payload is detected as the
+  ksud binary, and Nova is included in the universal manager switch.
+- **Pairing-code auto entry fixed**: the accessibility helper now checks the
+  event source, every interactive window, and content descriptions, tolerates
+  popup timing, and retries the same code after 10 seconds. Automatic pairing
+  works even when the pairing service was no longer marked active.
+- **KASLR calibration fast path**: aligned kernels take the original single
+  scan again, while non-2 MiB slides still use the full 64 KiB candidate sweep.
+  The fast path requires at least 64 timer records to avoid false positives.
+- **Soft reboot guidance**: the manual now explains that there is no separate
+  button; enabling the switch makes the next successful root restart zygote
+  automatically. It also lists the cases where that is actually useful.
 
 ## Fork features
 
