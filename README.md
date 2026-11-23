@@ -82,6 +82,8 @@ SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
 | Xiaomi Pad 7S Pro (violin) | HyperOS 4 / Android 17 | `6.18.21-android17-5-g284297031c53-abogki553682993-4k` |
 | Xiaomi Pad 9 Pro Max (yingtian) | HyperOS 4 / Android 17 | `6.18.21-android17-5-g805aa6adea19-abogki565292102-4k` |
 
+> OPPO K15 Pro+ working report: [@nakajimegame](https://x.com/nakajimegame/status/2124641337920348587).
+
 ## Supported managers
 
 Seven options are supported: KernelSU, KernelSU-Next, BakaSU, SukiSU Ultra, SukiSU Nova, YukiSU, and FinaSU.
