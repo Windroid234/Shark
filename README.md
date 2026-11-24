@@ -103,6 +103,10 @@ SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
 > [@acostajhaeuzcaezar-ux](https://github.com/acostajhaeuzcaezar-ux) in
 > [#10](https://github.com/kpgc10kai/Shark/issues/10).
 
+> **Model codes:** OPPO Find X10 is `PMW110`; Find X10 Pro Max is `PMX110`;
+> Find X9s Pro is `PME110`. The earlier `Find X10 (PMX110)` entry was a
+> name/code mismatch and is now listed as `Find X10 Pro Max (PMX110)`.
+
 ## Supported managers
 
 Seven options are supported: KernelSU, KernelSU-Next, BakaSU, SukiSU Ultra, SukiSU Nova, YukiSU, and FinaSU.
