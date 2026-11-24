@@ -66,6 +66,7 @@ SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
 | OPPO Find X9 Pro (PLG110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
 | OPPO Find X9 (PLJ110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
 | OPPO Find X9s Pro (PME110EX) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
+| OPPO Reno15 5G (CPH2825) | ColorOS 16 | `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` |
 | OPPO Find X10 Pro Max (PMX110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
 | OPPO Find X8 Ultra (PKJ110) | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
 | OPPO Find N5 (PKH110) | ColorOS 17 | `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` |
@@ -75,6 +76,7 @@ SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
 | Realme GT8 Pro (RMX5200) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
 | Realme GT8 (RMX6699) | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
 | OPPO K13 Turbo Pro (PLE110) | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
+| OPPO A6 Pro 5G (CPH2781) | ColorOS 17 | `6.18.21-android17-5-o-ga78682d7ab51-4k` |
 | OPPO K15 Pro+ (PMG110) | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
 | Realme Neo8 (RMX8899) | ColorOS 16/17 | `6.12.38-android16-5-g844001fb8721-ab14552068-4k`<br>`6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
 | Xiaomi 18 Pro (M610BB) | HyperOS 4 / Android 17 | `6.18.21-android17-5-g1d099fcb35e0-abogki540753930-4k` |
@@ -90,6 +92,16 @@ SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
 > [#6](https://github.com/kpgc10kai/Shark/issues/6). The low-21 KASLR
 > alignment fix used here shipped in `2.5.1-en.3`. This is a verified kernel
 > report, not a separate device profile.
+>
+> OPPO Reno15 5G (CPH2825) working report: SukiSU Nova reported **Working** on
+> ColorOS 16 / `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` by
+> [@huanhoahongso3-collab](https://github.com/huanhoahongso3-collab) in
+> [#8](https://github.com/kpgc10kai/Shark/issues/8).
+>
+> OPPO A6 Pro 5G (CPH2781) working report: ColorOS 17 /
+> `6.18.21-android17-5-o-ga78682d7ab51-4k` by
+> [@acostajhaeuzcaezar-ux](https://github.com/acostajhaeuzcaezar-ux) in
+> [#10](https://github.com/kpgc10kai/Shark/issues/10).
 
 ## Supported managers
 
