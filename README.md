@@ -1,6 +1,6 @@
 <h1 align="center"><img src="docs/images/app-icon.png" width="56" height="56" align="absmiddle" alt="Shark"> Shark</h1>
 
-<p align="center"><b>One-tap temporary root and manager-switching tool for multiple Android devices</b></p>
+<p align="center"><b>One-click temporary root and manager-switching tool for multiple Android devices</b></p>
 
 <p align="center">
   <a href="https://github.com/kpgc10kai/Shark/releases"><img src="docs/badges/release.svg" alt="Release"></a>
@@ -9,7 +9,6 @@
   <img src="docs/badges/kotlin.svg" alt="Kotlin">
   <img src="docs/badges/compose.svg" alt="Compose">
   <img src="docs/badges/kernel.svg" alt="Kernel">
-  <a href="https://github.com/Yunnijian/Shark"><img src="docs/badges/gitee.svg" alt="Gitee"></a>
 </p>
 
 > **Unofficial English fork of [Yunnijian/Shark](https://github.com/Yunnijian/Shark).**
@@ -29,7 +28,7 @@
 Shark supports OnePlus, OPPO, Realme, and other devices, with no BL unlock
 required; all you need to begin is adb shell. Through Stellar or Shizuku, the app
 drives the on-device exploit, gains temporary kernel privileges, then loads the LKM
-for the selected manager, ultimately providing a KernelSU, KernelSU-Next, BakaSU,
+for the selected manager, ultimately providing a KernelSU, KernelSU Next, BakaSU,
 SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
 
 ## Interface
@@ -37,7 +36,7 @@ SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
 <table align="center">
   <tr>
     <td align="center"><img src="docs/screenshots/app-home.jpg" width="180" alt="Home"><br><sub><b>Home</b></sub></td>
-    <td align="center"><img src="docs/screenshots/app-manager-dropdown.jpg" width="180" alt="ROOT Manager"><br><sub><b>ROOT Manager</b></sub></td>
+    <td align="center"><img src="docs/screenshots/app-manager-dropdown.jpg" width="180" alt="Root manager"><br><sub><b>Root manager</b></sub></td>
     <td align="center"><img src="docs/screenshots/app-extras.jpg" width="180" alt="Extras"><br><sub><b>Extras</b></sub></td>
   </tr>
   <tr>
@@ -113,17 +112,16 @@ SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
 
 ## Supported managers
 
-Seven options are supported: KernelSU, KernelSU-Next, BakaSU, SukiSU Ultra, SukiSU Nova, YukiSU, and FinaSU.
+Seven options are supported: KernelSU, KernelSU Next, BakaSU, SukiSU Ultra, SukiSU Nova, YukiSU, and FinaSU.
 
 Manager APKs are not distributed with Shark. Normal mode uses the `ksud` inside the
 installed manager APK, so **install the manager you intend to use first**.
 
 ## What it can do
 
-- **One-tap temporary root**: After opening the app, no manual exploit selection is
+- **One-click root**: After opening the app, no manual exploit selection is
   needed; it uses `uname -r` to automatically match one of five chains: 6.18.21 /
-  6.12.69 / 6.12.38 / 6.12.58 / 6.6.118. A single tap on “One-tap
-  Jailbreak” completes privilege escalation, `ksud late-load`, module installation,
+  6.12.69 / 6.12.38 / 6.12.58 / 6.6.118. Tap **One-click root** to complete privilege escalation, `ksud late-load`, module installation,
   and manager launch. Temporary root disappears after a reboot; just run it again on
   the next boot.
 - **Wireless ADB pairing, no PC**: Pair over Android's Wireless debugging and run
@@ -134,32 +132,33 @@ installed manager APK, so **install the manager you intend to use first**.
 - **Wired ADB activation**: Connect USB and run `tools/wired-adb.sh` to start
   the privileged shell through ADB. Shark detects it as the Shizuku backend, so
   no Wireless debugging pairing is required.
-- **Auto root on boot**: When enabled, the one-tap flow runs after boot and the
+- **Auto root on boot**: When enabled, the one-click flow runs after boot and the
   result is shown in the log. The app asks for the "Display over other apps"
   permission so it can start from the background; allow Shark to auto-start in
   your device's battery/settings screen, or it cannot run after a reboot. If the
   previous automatic attempt never finished (a reboot during the flow), the
   option disables itself to avoid a loop.
-- **Seven manager choices**: Pick KernelSU, KernelSU-Next, BakaSU, SukiSU Ultra, SukiSU Nova, YukiSU, or
-  FinaSU directly from the ROOT Manager dropdown. The app is not tied to a single
+- **Seven manager choices**: Pick KernelSU, KernelSU Next, BakaSU, SukiSU Ultra, SukiSU Nova, YukiSU, or
+  FinaSU directly from the Root manager dropdown. The app is not tied to a single
   manager; the manager APK must be installed separately, and normal mode uses the
   `ksud` and LKM from that APK.
-- **Hot manager switching**: Supported on 6.18 and 6.12. On the first clean boot,
+- **Manager hot-switch**: Supported on 6.18 and 6.12. On the first clean boot,
   select `Dynamic Switching` to load the universal KSU LKM (initially KernelSU);
-  afterward, choose the target manager under “Hot Manager Switching” in Extras.
+  afterward, choose the target manager under “Manager hot-switch” in Extras.
   Switching synchronizes the version number, feature, private ioctl, and primary manager,
   and automatically reopens the target manager; no reboot or re-exploitation is
   required.
-- **Extras**: On 6.18, a VFS provider can be loaded; on 6.12, SUSFS can be
-  loaded. Other toggles suppress anti-root dialogs, perform a soft reboot after
-  jailbreaking, and unload kernel security protections. Enable them as needed; a
+- **Extras**: On 6.18, **VFS support** loads the VFS provider; on 6.12,
+  **SUSFS support** loads SUSFS. Other toggles disable security popups after
+  rooting, perform a soft reboot after rooting, and unload the kernel security
+  guard. Enable them as needed; a
   failure in one item does not affect root that is already active.
-- **Logs and history**: Runtime logs scroll in real time. Each jailbreak saves a
+- **Logs and history**: Runtime logs scroll in real time. Each root run saves a
   complete log to the History page, where it can be viewed, deleted, or swiped left
   to export and share, making it easier to troubleshoot failures or keep records.
-- **Online updates**: Gitee Releases is checked at startup, falling back to GitHub if
-  that fails. When a new version is found, it is downloaded in-app, its SHA-256 and
-  APK signature are verified, and it is then handed to the system installer.
+- **Online updates**: GitHub Releases is checked at startup. When a new version
+  is found, it is downloaded in-app, its SHA-256 and APK signature are verified,
+  and it is then handed to the system installer.
 - **Droidspaces support**: On 6.18, the latest `droidspaces_lkm` module can be
   fetched with one tap and saved to `Download/Shark/`, after which it can be flashed
   in the KernelSU manager; the app does not bundle this module.
@@ -168,17 +167,17 @@ installed manager APK, so **install the manager you intend to use first**.
 
 ### Normal mode
 
-Choose a manager in ROOT Manager; the app uses the `ksud` bundled with that
+Choose a manager in Root manager; the app uses the `ksud` bundled with that
 manager's APK to load its own LKM. This is the manager's native root environment.
 
 In normal mode, changing managers still requires a reboot.
 
-### Extended mode
+### Dynamic Switching
 
-Select `Dynamic Switching` in ROOT Manager. The app uses the bundled
+Select `Dynamic Switching` in Root manager. The app uses the bundled
 `libksud_universal.so` to load the universal KSU LKM; the initial manager is KernelSU.
 
-After loading completes, “Hot Manager Switching” appears in Extras: open the
+After loading completes, “Manager hot-switch” appears in Extras: open the
 dropdown and choose the target manager; the app applies the switch and automatically
 reopens the target manager. Switching only changes the manager profile in the kernel;
 it does not uninstall modules or reboot.
@@ -191,11 +190,11 @@ happen on a clean boot with no KSU loaded; hot replacement is not possible once
 
 1. Install the manager APK you want to use. If you plan to use Dynamic Switching,
    installing all seven is recommended.
-2. Start Stellar or Shizuku and grant access to Shark.
-3. Select a normal manager or `Dynamic Switching` in the ROOT Manager dropdown.
+2. Connect a backend: start Stellar or Shizuku and grant access, tap **Wireless ADB** and pair, or run `tools/wired-adb.sh` over USB (see below).
+3. Select a normal manager or `Dynamic Switching` in the Root manager dropdown.
 4. Enable the Extras you need.
-5. Tap “One-tap Jailbreak” and wait for `DONE` to appear in the logs.
-6. In normal mode, open the manager and grant root; with Dynamic Switching, select
+5. Tap **One-click root** (it becomes **Verify / root again** after a successful run). The exploit prints `DONE` when it finishes.
+6. In normal mode, the selected manager opens and asks for root; with Dynamic Switching, select
    the target manager in Extras, and the app switches to it and opens it automatically.
 
 ### Wireless ADB pairing
@@ -228,7 +227,7 @@ tools/wired-adb.sh
 
 The script starts `ShellServer` as the shell user through `app_process`. Shark
 detects the Shizuku-compatible binder and shows **Shizuku authorized**; the
-normal One-click root flow then works over the wired connection.
+normal root flow then works over the wired connection.
 
 To run it manually:
 
@@ -259,7 +258,7 @@ Shark/
 ├── app/                         Android app (Gradle project)
 │   ├── app/src/main/java/com/shark/kty/
 │   │   ├── MainActivity.kt      Four tabs, flow control, manager and Extras state
-│   │   ├── UpdateChecker.kt     Gitee / GitHub update checks
+│   │   ├── UpdateChecker.kt     GitHub update checks
 │   │   ├── HistoryStore.kt      Log persistence, history records
 │   │   └── DroidspacesModule.kt Droidspaces module download
 │   ├── app/src/main/jniLibs/arm64-v8a/
