@@ -65,7 +65,7 @@ SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
 | OPPO Find X9 Pro (PLG110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
 | OPPO Find X9 (PLJ110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
 | OPPO Find X9s Pro (PME110EX) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
-| OPPO Reno15 5G (CPH2825) | ColorOS 16 | `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` |
+| OPPO Reno15 5G (CPH2825) | ColorOS 16 / 17 beta | `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` |
 | OPPO Find X10 (PMW110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
 | OPPO Find X10 Pro Max (PMX110) | ColorOS 17 | `6.18.21-android17-5-gf957accaf563-ab15926176-4k` |
 | OPPO Find X8 Ultra (PKJ110) | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
@@ -94,8 +94,9 @@ SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
 > report, not a separate device profile.
 >
 > OPPO Reno15 5G (CPH2825) working report: SukiSU Nova reported **Working** on
-> ColorOS 16 / `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` by
-> [@huanhoahongso3-collab](https://github.com/huanhoahongso3-collab) in
+> ColorOS 16 and again on ColorOS 17 beta (`CPH2825_17.0.0.102`, November 2026
+> patch) with the same `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` kernel
+> by [@huanhoahongso3-collab](https://github.com/huanhoahongso3-collab) in
 > [#8](https://github.com/kpgc10kai/Shark/issues/8).
 >
 > OPPO A6 Pro 5G (CPH2781) working report: ColorOS 17 /
