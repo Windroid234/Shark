@@ -17,7 +17,7 @@
 > binaries and update notes in
 > [Yunnijian/Shark-Releases](https://github.com/Yunnijian/Shark-Releases)
 > (releases only, no source). This fork continues from the last synced source
-> (v2.3.2) and follows that releases page: app features and new kernel profiles
+> (v2.5.1) and follows that releases page: app features and new kernel profiles
 > are ported from the published APKs, and each fork release states which
 > upstream version it tracks. Source-level sync with upstream is no longer
 > possible.
@@ -30,7 +30,7 @@ Shark supports OnePlus, OPPO, Realme, and other devices, with no BL unlock
 required; all you need to begin is adb shell. Through Stellar or Shizuku, the app
 drives the on-device exploit, gains temporary kernel privileges, then loads the LKM
 for the selected manager, ultimately providing a KernelSU, KernelSU-Next, BakaSU,
-SukiSU Ultra, or FinaSU root environment.
+SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
 
 ## Interface
 
@@ -66,7 +66,7 @@ SukiSU Ultra, or FinaSU root environment.
 | OPPO Find X9 Pro (PLG110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
 | OPPO Find X9 (PLJ110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
 | OPPO Find X9s Pro (PME110EX) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
-| OPPO Find X10 (PMX110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
+| OPPO Find X10 Pro Max (PMX110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
 | OPPO Find X8 Ultra (PKJ110) | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
 | OPPO Find N5 (PKH110) | ColorOS 17 | `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` |
 | OPPO Pad Mini (OPD2515) | ColorOS 16/17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k`<br>`6.12.58-android16-6-g7704a1ae279b-ab15213644-4k` |
@@ -83,10 +83,17 @@ SukiSU Ultra, or FinaSU root environment.
 | Xiaomi Pad 9 Pro Max (yingtian) | HyperOS 4 / Android 17 | `6.18.21-android17-5-g805aa6adea19-abogki565292102-4k` |
 
 > OPPO K15 Pro+ working report: [@nakajimegame](https://x.com/nakajimegame/status/2124641337920348587).
+>
+> Redmi Pad SE 8.7 (`flare`) community verification: end-to-end root was
+> confirmed on `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` by
+> [@nestchao](https://github.com/nestchao) in
+> [#6](https://github.com/kpgc10kai/Shark/issues/6). The low-21 KASLR
+> alignment fix used here shipped in `2.5.1-en.3`. This is a verified kernel
+> report, not a separate device profile.
 
 ## Supported managers
 
-Five options are supported: KernelSU, KernelSU-Next, BakaSU, SukiSU Ultra, and FinaSU.
+Seven options are supported: KernelSU, KernelSU-Next, BakaSU, SukiSU Ultra, SukiSU Nova, YukiSU, and FinaSU.
 
 Manager APKs are not distributed with Shark. Normal mode uses the `ksud` inside the
 installed manager APK, so **install the manager you intend to use first**.
@@ -99,13 +106,21 @@ installed manager APK, so **install the manager you intend to use first**.
   Jailbreak” completes privilege escalation, `ksud late-load`, module installation,
   and manager launch. Temporary root disappears after a reboot; just run it again on
   the next boot.
+- **Wireless ADB pairing, no PC**: Pair over Android's Wireless debugging and run
+  the root flow on the loopback ADB connection. With the optional accessibility
+  helper enabled, Shark reads the six-digit pairing code from Settings and
+  submits it automatically; otherwise the code can be entered from the pairing
+  notification.
+- **Wired ADB activation**: Connect USB and run `tools/wired-adb.sh` to start
+  the privileged shell through ADB. Shark detects it as the Shizuku backend, so
+  no Wireless debugging pairing is required.
 - **Auto root on boot**: When enabled, the one-tap flow runs after boot and the
   result is shown in the log. The app asks for the "Display over other apps"
   permission so it can start from the background; allow Shark to auto-start in
   your device's battery/settings screen, or it cannot run after a reboot. If the
   previous automatic attempt never finished (a reboot during the flow), the
   option disables itself to avoid a loop.
-- **Five manager choices**: Pick KernelSU, KernelSU-Next, BakaSU, SukiSU Ultra, or
+- **Seven manager choices**: Pick KernelSU, KernelSU-Next, BakaSU, SukiSU Ultra, SukiSU Nova, YukiSU, or
   FinaSU directly from the ROOT Manager dropdown. The app is not tied to a single
   manager; the manager APK must be installed separately, and normal mode uses the
   `ksud` and LKM from that APK.
@@ -155,13 +170,65 @@ happen on a clean boot with no KSU loaded; hot replacement is not possible once
 ## Usage
 
 1. Install the manager APK you want to use. If you plan to use Dynamic Switching,
-   installing all five is recommended.
+   installing all seven is recommended.
 2. Start Stellar or Shizuku and grant access to Shark.
 3. Select a normal manager or `Dynamic Switching` in the ROOT Manager dropdown.
 4. Enable the Extras you need.
 5. Tap “One-tap Jailbreak” and wait for `DONE` to appear in the logs.
 6. In normal mode, open the manager and grant root; with Dynamic Switching, select
    the target manager in Extras, and the app switches to it and opens it automatically.
+
+### Wireless ADB pairing
+
+1. Enable **Wireless debugging** in Developer options.
+2. Tap **Wireless ADB** in Shark. If the accessibility prompt appears, open
+   Settings and enable **Shark pairing helper**.
+3. In Settings, tap **Pair device with pairing code** and keep the dialog open.
+4. The helper reads the six-digit code and submits it automatically. If the helper
+   is off or the code cannot be read, expand the **Pairing service found**
+   notification and enter the code there.
+5. Wait for Shark to return and show **Wireless ADB authorized**. Pairing
+   notifications are cleared on success.
+
+The helper only observes `com.android.settings`; it does not read other apps or
+open a network port.
+
+### Wired ADB activation
+
+When USB debugging is available, a PC can start the privileged shell directly;
+no Wireless debugging pairing is needed.
+
+1. Enable USB debugging and authorize the PC.
+2. Keep Shark installed (the app can be in the background).
+3. From this repository, run:
+
+```bash
+tools/wired-adb.sh
+```
+
+The script starts `ShellServer` as the shell user through `app_process`. Shark
+detects the Shizuku-compatible binder and shows **Shizuku authorized**; the
+normal One-click root flow then works over the wired connection.
+
+To run it manually:
+
+```bash
+APK=$(adb shell pm path com.shark.kty | sed -n 's/^package://p' | tr -d '\r')
+adb shell "CLASSPATH='$APK' setsid app_process /system/bin \
+  --nice-name=shark_shell com.shark.kty.shell.ShellServer \
+  </dev/null >/dev/null 2>&1 &"
+```
+
+The shell server is a normal shell process; it does not write partitions. The
+watchdog keeps it alive until the device reboots.
+
+### Experimental builds
+
+Experimental APKs use a separate versionCode (`9001`, `9002`, ...) so they can
+update over each other, but a public release (`1036`, ...) cannot be installed
+over an experimental build. Uninstall the experimental APK before switching to
+a public release. The public update path from `2.5.1-en.2` (`1035`) to
+`2.5.1-en.3` (`1036`) is unaffected.
 
 ## Project structure
 
@@ -298,7 +365,7 @@ installed alongside this one, but settings and history are not migrated.
 - Upstream releases (binaries only, no source):
   https://github.com/Yunnijian/Shark-Releases
 - Upstream source repository was removed in November 2026. This fork continues
-  from the last synced source (v2.3.2, upstream versionCode 98) and tracks the
+  from the last synced source (v2.5.1, upstream versionCode 103) and tracks the
   upstream releases page.
 
 ### Release policy
@@ -309,6 +376,9 @@ installed alongside this one, but settings and history are not migrated.
   **pre-release** with the APK removed, so their old links still lead to
   https://github.com/kpgc10kai/Shark/releases/latest
 - Only the latest build of each line carries downloadable assets.
+- Archiving is scripted: `tools/archive-release.sh v2.5.1-en.2` removes the
+  assets, marks the release as a pre-release, and leaves the latest-download
+  notice.
 
 ### Update history
 
@@ -333,13 +403,16 @@ installed alongside this one, but settings and history are not migrated.
 | `2.5-en.14` | 2.5 | Manual: `FAIL=selinux` retry-versus-reboot guidance |
 | `2.5.1-en.1` | 2.5.1 | Aligned with upstream 2.5.1: removed all vivo/iQOO support; added Xiaomi Xuanjie O1 (Pad 7S Pro) and O3 (Pad 9 Pro Max) 6.18.21 profiles |
 | `2.5.1-en.2` | 2.5.1 | Fixed update checker: `2.5-en.14` no longer compares as newer than `2.5.1`, so the update dialog appears again |
+| `2.5.1-en.3` | 2.5.1 | Issue #6: 6.6.118 KASLR low-21 alignment fix; automatic wireless pairing via the accessibility helper; paired-notification cleanup; supervisor timeout; manual/README updates |
+| `2.5.1-en.4` | 2.5.1 | Wired ADB activation (`tools/wired-adb.sh`); pairing-helper status in Extras; bounded pairing timeouts; digest-first update checks; supervisor notification cleanup; `probe`/`--help` and no-arg diagnostics; archive tooling |
+| `2.5.1-en.5` | 2.5.1 | SukiSU Nova manager support; robust pairing-code auto entry; KASLR single-scan fast path for aligned kernels; soft-reboot troubleshooting guidance |
+| `2.5.1-en.6` | 2.5.1 | YukiSU manager support (`org.rouyashiki.yukisu`); seven manager choices; YukiSU late-load and universal-switch integration |
 
 Each release stamps its own `2.5-en.N` version and is signed with the fork's
 release key. Every release ships the signed APK together with its SHA-256 file.
 
 ### Planned / not yet ported
 
-- **Wired ADB activation** — start the privileged backend over USB ADB.
 - **Pairing UI polish / English strings** — the current pairing flow uses the
   notification-based code entry inherited from Stellar; dedicated in-app screens
   and translations are still pending.
