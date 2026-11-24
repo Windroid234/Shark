@@ -67,7 +67,8 @@ SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
 | OPPO Find X9 (PLJ110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
 | OPPO Find X9s Pro (PME110EX) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
 | OPPO Reno15 5G (CPH2825) | ColorOS 16 | `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` |
-| OPPO Find X10 Pro Max (PMX110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
+| OPPO Find X10 (PMW110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
+| OPPO Find X10 Pro Max (PMX110) | ColorOS 17 | `6.18.21-android17-5-gf957accaf563-ab15926176-4k` |
 | OPPO Find X8 Ultra (PKJ110) | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
 | OPPO Find N5 (PKH110) | ColorOS 17 | `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` |
 | OPPO Pad Mini (OPD2515) | ColorOS 16/17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k`<br>`6.12.58-android16-6-g7704a1ae279b-ab15213644-4k` |
@@ -103,9 +104,12 @@ SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
 > [@acostajhaeuzcaezar-ux](https://github.com/acostajhaeuzcaezar-ux) in
 > [#10](https://github.com/kpgc10kai/Shark/issues/10).
 
-> **Model codes:** OPPO Find X10 is `PMW110`; Find X10 Pro Max is `PMX110`;
-> Find X9s Pro is `PME110`. The earlier `Find X10 (PMX110)` entry was a
-> name/code mismatch and is now listed as `Find X10 Pro Max (PMX110)`.
+
+> **Model/kernel note:** Find X10 is `PMW110` (MT6993, 6.12 kernel family);
+> Find X10 Pro Max is `PMX110` (MT6995, verified `6.18.21-android17-5-gf957accaf563-ab15926176-4k`).
+> The upstream `Find X10（PMX110）` entry mixed the standard name with the
+> Pro Max code. Both are now listed separately; the exact PMW110 build still
+> needs a device dump to confirm.
 
 ## Supported managers
 
