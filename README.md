@@ -84,6 +84,8 @@ SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
 | HONOR 600 (VKJ-NX9) | MagicOS 11 / Android 17 | `6.6.118-android15-8-gc901ea41aa32-ab15981388-4k` |
 
 > OPPO K15 Pro+ working report: [@nakajimegame](https://x.com/nakajimegame/status/2124641337920348587).
+> HONOR 600 (VKJ-NX9) working report: [ports/honor600-66118/README.md](ports/honor600-66118/README.md), tested on-device by [@Windroid234](https://github.com/Windroid234).
+> The HONOR 600 port targets `experimental/shellserver`; after device verification it can be cherry-picked to `main`.
 
 ## Supported managers
 
